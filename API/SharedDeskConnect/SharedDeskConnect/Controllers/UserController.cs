@@ -45,7 +45,33 @@ namespace SharedDeskConnect.Controllers
             }
             _context.Users.Add(user);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = user.UserID }, user);
+        }
+
+        // PUT: api/User/5
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, User updatedUser)
+        {
+            if (id != updatedUser.UserID)
+            {
+                return BadRequest();
+            }
+
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Username = updatedUser.Username;
+            user.Password = updatedUser.Password;
+            user.UserType = updatedUser.UserType;
+            user.Email = updatedUser.Email;
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

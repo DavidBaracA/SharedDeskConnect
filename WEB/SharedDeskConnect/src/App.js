@@ -7,7 +7,7 @@ function App() {
   const [users,setUsers]= useState([])
   const getUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5100/api/User/GetUsers')
+      const response = await fetch('http://localhost:5100/api/Space/GetSpaces')
         .then(response => response.json())
         .then(data => {setUsers(data)});
   

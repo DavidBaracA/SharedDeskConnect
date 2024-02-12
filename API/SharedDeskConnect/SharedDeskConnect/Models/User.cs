@@ -5,7 +5,7 @@ namespace SharedDeskConnect.Models
         public class User
         {
             [Key]
-            public int UserId { get; set; }
+            public int UserID { get; set; }
             [Required]
             [MaxLength(100)]
             public string Username { get; set; }
