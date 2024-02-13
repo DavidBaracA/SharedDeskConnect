@@ -1,47 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
-import  { useEffect,useState } from 'react';
-
+import React from 'react';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import HomePage from './Pages/HomePage/HomePage';
+import AboutUsPage from './Pages/AboutUsPage/AboutUsPage';
 
 function App() {
-  const [users,setUsers]= useState([])
-  const getUsers = async () => {
-    try {
-      const response = await fetch('http://localhost:5100/api/Space/GetSpaces')
-        .then(response => response.json())
-        .then(data => {setUsers(data)});
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error adding reservation:', error.message);
-    }
-  };
-  
-    useEffect((() => 
-    {
-      getUsers();
-    }), []);
-    console.log("users: ls",users)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<HomePage />}>
+      <Route path="/space-list" element={<AboutUsPage />} />
+      <Route path="/list a space" element={<AboutUsPage />} />
+      <Route path="/your-spaces" element={<AboutUsPage />} />
+      <Route path="/your-rentals" element={<AboutUsPage />} />
+
+
+      </Route>
+    </Routes>
+  </BrowserRouter>
   );
 }
+
 
 export default App;

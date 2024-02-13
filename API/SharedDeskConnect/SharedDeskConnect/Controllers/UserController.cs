@@ -35,6 +35,17 @@ namespace SharedDeskConnect.Controllers
             return user;
         }
 
+        [HttpGet("username/{username}")]
+        public ActionResult<User> GetUserByUsername(string username)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                return NoContent();
+            }
+            return user;
+        }
+
         // POST: api/User
         [HttpPost]
         public ActionResult<User> AddUser(User user)
