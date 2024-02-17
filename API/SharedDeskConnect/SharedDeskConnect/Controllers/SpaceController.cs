@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SharedDeskConnect.Models;
 
 namespace SharedDeskConnect.Controllers
@@ -65,11 +66,14 @@ namespace SharedDeskConnect.Controllers
 
             // Actualizează proprietățile spațiului cu noile valori
             space.Name = updatedSpace.Name;
-            space.Location = updatedSpace.Location;
+            space.City = updatedSpace.City;
             space.Price = updatedSpace.Price;
             space.Description = updatedSpace.Description;
             space.RenterUserId = updatedSpace.RenterUserId;
             space.MaxCapacity = updatedSpace.MaxCapacity;
+            space.Adress = updatedSpace.Adress;
+
+
 
             _context.Spaces.Update(space);
             _context.SaveChanges();
@@ -93,6 +97,52 @@ namespace SharedDeskConnect.Controllers
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpPost("{id}/UploadImages")]
+        public async Task<IActionResult> UploadImage(int id, List<IFormFile> files)
+        {
+            var space = await _context.Spaces.FindAsync(id);
+            if (space == null)
+            {
+                return NotFound();
+            }
+
+            // Check if files are null or empty
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest("Invalid files");
+            }
+
+            foreach (var file in files)
+            {
+                // Convert uploaded file to byte array
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var image = new Image { ImageValue = memoryStream.ToArray(), SpaceID = id };
+                    _context.Images.Add(image);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // GET: api/Space/{id}/Images
+        [HttpGet("{id}/Images")]
+        public async Task<IActionResult> GetImages(int id)
+        {
+            var images = await _context.Images.Where(i => i.SpaceID == id).ToListAsync();
+            if (images == null || images.Count == 0)
+            {
+                return NotFound("No images found for the specified space");
+            }
+
+            // Convert image data to base64 strings
+            var imageDataList = images.Select(i => Convert.ToBase64String(i.ImageValue)).ToList();
+            return Ok(imageDataList);
         }
     }
 }

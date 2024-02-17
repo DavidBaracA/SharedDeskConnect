@@ -11,14 +11,17 @@ namespace SharedDeskConnect.Models
         public string Name { get; set; }
         [Required]
         [MaxLength(100)]
-        public string Location { get; set; }
+        public string City { get; set; }
         [Required]
         public decimal Price { get; set; }
         [Required]
         public int MaxCapacity { get; set; }
         public string Description { get; set; }
-
         [Required]
         public int RenterUserId { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Adress { get; set; }
+
     }
 }

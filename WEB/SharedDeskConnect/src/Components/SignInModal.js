@@ -35,8 +35,8 @@ export const SignInModal = (props) => {
           setUsers(data);
         });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response) {
+        throw new Error(`HTTP error! Status: ${response}`);
       }
     } catch (error) {
       console.error("Error adding reservation:", error.message);

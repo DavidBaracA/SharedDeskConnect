@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
 import { SignInModal } from "./SignInModal";
 import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 const logoStyle = {
   width: "140px",
@@ -28,6 +29,14 @@ const logoStyle = {
 
 function NavBar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const onRentASpaceClick = () => {
+    navigate("/listed-spaces");
+  };
+  const onListASpaceClick = () => {
+    navigate("/list-a-space");
+  };
 
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const currentUser = useSelector((state) => state.currentUser);
@@ -117,10 +126,11 @@ function NavBar() {
                 src={SharedDeskConnect}
                 style={logoStyle}
                 alt="logo of Shared Desk Connect"
+                  onClick={() => navigate("/")}
               />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <MenuItem
-                  onClick={() => scrollToSection("features")}
+                  onClick={() => onRentASpaceClick()}
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="body2" color="text.primary">
@@ -128,8 +138,9 @@ function NavBar() {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("testimonials")}
                   sx={{ py: "6px", px: "12px" }}
+                  onClick={() => onListASpaceClick()}
+
                 >
                   <Typography variant="body2" color="text.primary">
                     List your space

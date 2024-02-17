@@ -1,53 +1,53 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import PriceChangeIcon from "@mui/icons-material/PriceChange";
+import SecurityIcon from "@mui/icons-material/Security";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PeopleIcon from "@mui/icons-material/People";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon />,
-    title: 'Adaptable performance',
+    icon: <LocationCityIcon />,
+    title: "Prime locations",
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      "Discover coworking spaces in desirable areas, strategically located for convenience and accessibility.",
   },
   {
-    icon: <ConstructionRoundedIcon />,
-    title: 'Built to last',
+    icon: <PriceChangeIcon />,
+    title: "Flexible pricing",
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
+      "Choose from a range of pricing options tailored to your budget and usage requirements.",
   },
   {
-    icon: <ThumbUpAltRoundedIcon />,
-    title: 'Great user experience',
+    icon: <SecurityIcon />,
+    title: "Secure transactions",
     description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      "Rest assured with secure payment processing and protection against fraudulent activities.",
   },
   {
-    icon: <AutoFixHighRoundedIcon />,
-    title: 'Innovative functionality',
+    icon: <CalendarMonthIcon />,
+    title: "Flexible booking",
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      "Book coworking spaces at your convenience, with flexible scheduling options that suit your workflow.",
   },
   {
-    icon: <SupportAgentRoundedIcon />,
-    title: 'Reliable support',
+    icon: <PeopleIcon />,
+    title: "Collaborative environment",
     description:
-      'Count on our responsive customer support, offering assistance that goes beyond the purchase.',
+      "Join a community of like-minded individuals, fostering collaboration and networking opportunities.",
   },
   {
-    icon: <QueryStatsRoundedIcon />,
-    title: 'Precision in every detail',
+    icon: <WorkHistoryIcon />,
+    title: "Productive workspaces",
     description:
-      'Enjoy a meticulously crafted product where small touches make a significant impact on your overall experience.',
+      "Optimize your workspace for maximum productivity, tailoring it to your preferences and work habits to enhance efficiency and focus.",
   },
 ];
 
@@ -58,31 +58,32 @@ export default function Highlights() {
       sx={{
         pt: { xs: 4, sm: 12 },
         pb: { xs: 8, sm: 16 },
-        color: 'white',
+        color: "white",
       }}
     >
       <Container
         sx={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           gap: { xs: 3, sm: 6 },
         }}
       >
         <Box
           sx={{
-            width: { sm: '100%', md: '60%' },
-            textAlign: { sm: 'left', md: 'center' },
+            width: { sm: "100%", md: "60%" },
+            textAlign: { sm: "left", md: "center" },
           }}
         >
           <Typography component="h2" variant="h4">
             Highlights
           </Typography>
-          <Typography variant="body1" sx={{ color: 'grey.400' }}>
-            Explore why our product stands out: adaptability, durability,
-            user-friendly design, and innovation. Enjoy reliable customer support and
-            precision in every detail.
+          <Typography variant="body1" sx={{ color: "grey.400" }}>
+            Embark on a journey of exploration as you enter our platform for
+            space rentals. Experience the convenience of a streamlined interface
+            and the assurance of meticulous attention to detail, ensuring your
+            search for the perfect space is both effortless and rewarding.
           </Typography>
         </Box>
         <Grid container spacing={2.5}>
@@ -96,19 +97,19 @@ export default function Highlights() {
                 useFlexGap
                 sx={{
                   p: 3,
-                  height: '100%',
-                  border: '1px solid',
-                  borderColor: 'grey.800',
-                  background: 'transparent',
-                  backgroundColor: '#041f60',
+                  height: "100%",
+                  border: "1px solid",
+                  borderColor: "grey.800",
+                  background: "transparent",
+                  backgroundColor: "#041f60",
                 }}
               >
-                <Box sx={{ opacity: '50%' }}>{item.icon}</Box>
+                <Box sx={{ opacity: "50%" }}>{item.icon}</Box>
                 <div>
                   <Typography fontWeight="medium" gutterBottom>
                     {item.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'grey.400' }}>
+                  <Typography variant="body2" sx={{ color: "grey.400" }}>
                     {item.description}
                   </Typography>
                 </div>

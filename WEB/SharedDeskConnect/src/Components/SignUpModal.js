@@ -60,8 +60,8 @@ export const SignUpModal = (props) => {
           setUsers(data);
         });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response) {
+        throw new Error(`HTTP error! Status: ${response}`);
       }
       
     } catch (error) {
@@ -82,8 +82,8 @@ export const SignUpModal = (props) => {
           email: email,
         }),
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response) {
+        throw new Error(`HTTP error! Status: ${response}`);
       }
       else {
         dispatch({type:"LOGIN",payload:username})
