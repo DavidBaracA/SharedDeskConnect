@@ -1,0 +1,16 @@
+.image-item {
+  display: flex;
+  margin: 10px 0;
+}
+.image-item__btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+button {
+  height: 40px;
+}
+
+.images-wraper {
+    display: flex;
+}
