@@ -19,7 +19,6 @@ import { Avatar } from "@mui/material";
 import { SignInModal } from "./SignInModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AlertTitle from '@mui/material/AlertTitle';
 
 
 const logoStyle = {
@@ -45,7 +44,6 @@ function NavBar() {
   };
 
 
-  console.log("userID:", currentUserId);
   const [open, setOpen] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
