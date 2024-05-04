@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ImageUploading from "react-images-uploading";
 import "./styles/UploadComponent.css";
 import Button from "@mui/material/Button";
+import { useState } from "react";
 
 export const UploadComponent = (props) => {
-  const { setImages, images } = props;
+  const {images } = props;
+  console.log("ds",images)
+  const [formatImages, setFormatImages] = useState(images)
   const maxNumber = 69;
   const onChange = (imageList) => {
     // data for submit
-    setImages(imageList);
+    setFormatImages(imageList);
   };
+  // useEffect(()=>{
+
+  // })
 
   return (
     <div>
       <ImageUploading
         multiple
-        value={images}
+        value={formatImages}
         onChange={onChange}
         maxNumber={maxNumber}
         dataURLKey="data_url"

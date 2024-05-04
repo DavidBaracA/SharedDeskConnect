@@ -18,10 +18,10 @@ namespace SharedDeskConnect.Models
         public int MaxCapacity { get; set; }
         public string Description { get; set; }
         [Required]
-        public int RenterUserId { get; set; }
-        [Required]
         [MaxLength(50)]
-        public string Adress { get; set; }
+        public string Address { get; set; }
+        [Required]
+        public int RenterUserId { get; set; }
 
     }
 }

@@ -20,6 +20,7 @@ export const SignInModal = (props) => {
     password: "",
   });
 
+  console.log("user", users);
   const handleChange = (event) => {
     setFormValues({
       ...formValues,
@@ -54,7 +55,17 @@ export const SignInModal = (props) => {
       if (
         isUserAuthenticated(users, formValues.username, formValues.password)
       ) {
-        dispatch({ type: "LOGIN", payload: formValues.username });
+        users.forEach((user) => {
+          if (
+            user.username === formValues.username &&
+            user.password === formValues.password
+          ) {
+            dispatch({
+              type: "LOGIN",
+              payload: { username: user.username, currentId: user.userID },
+            });
+          }
+        });
         handleClose();
       }
     } else {

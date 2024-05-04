@@ -86,7 +86,9 @@ export const SignUpModal = (props) => {
         throw new Error(`HTTP error! Status: ${response}`);
       }
       else {
-        dispatch({type:"LOGIN",payload:username})
+        const responseData = await response.json();
+        const userID = responseData.userID
+        dispatch({type:"LOGIN",payload:{username:username,currentId:userID}})
       }
     } catch (error) {
       console.error("Error adding user:", error.message);

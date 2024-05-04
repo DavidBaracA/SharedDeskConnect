@@ -71,7 +71,7 @@ namespace SharedDeskConnect.Controllers
             space.Description = updatedSpace.Description;
             space.RenterUserId = updatedSpace.RenterUserId;
             space.MaxCapacity = updatedSpace.MaxCapacity;
-            space.Adress = updatedSpace.Adress;
+            space.Address = updatedSpace.Address;
 
 
 

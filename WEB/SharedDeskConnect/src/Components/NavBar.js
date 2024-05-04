@@ -17,8 +17,10 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
 import { SignInModal } from "./SignInModal";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import AlertTitle from '@mui/material/AlertTitle';
+
 
 const logoStyle = {
   width: "140px",
@@ -30,21 +32,23 @@ const logoStyle = {
 function NavBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const currentUser = useSelector((state) => state.currentUser);
+  const currentUserId = useSelector((state) => state.currentUserID);
 
   const onRentASpaceClick = () => {
     navigate("/listed-spaces");
   };
   const onListASpaceClick = () => {
+    if(currentUserId!== null)
     navigate("/list-a-space");
   };
 
-  const isLoggedIn = useSelector((state) => state.isLoggedIn);
-  const currentUser = useSelector((state) => state.currentUser);
 
+  console.log("userID:", currentUserId);
   const [open, setOpen] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
-
 
   const handleCloseSignUp = () => {
     setOpenSignUp(false);
@@ -126,7 +130,7 @@ function NavBar() {
                 src={SharedDeskConnect}
                 style={logoStyle}
                 alt="logo of Shared Desk Connect"
-                  onClick={() => navigate("/")}
+                onClick={() => navigate("/")}
               />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <MenuItem
@@ -140,7 +144,6 @@ function NavBar() {
                 <MenuItem
                   sx={{ py: "6px", px: "12px" }}
                   onClick={() => onListASpaceClick()}
-
                 >
                   <Typography variant="body2" color="text.primary">
                     List your space
@@ -191,7 +194,7 @@ function NavBar() {
                 >
                   Sign in
                 </Button>
-                <SignInModal  open={openSignIn} onClose={handleCloseSignIn}/>
+                <SignInModal open={openSignIn} onClose={handleCloseSignIn} />
                 <Button
                   color="primary"
                   variant="contained"
@@ -219,7 +222,7 @@ function NavBar() {
                   variant="contained"
                   size="small"
                   onClick={() => {
-                    dispatch({type:"LOGOUT"})
+                    dispatch({ type: "LOGOUT" });
                   }}
                 >
                   Log Out
