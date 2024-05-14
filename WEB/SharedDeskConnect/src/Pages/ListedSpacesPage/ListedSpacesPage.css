@@ -21,9 +21,12 @@
   margin-left: 100px;
   margin-top: 150px;
 }
+.sort-buttons {
+  padding: 10px
+}
 
 
 
 .footer-container {
-
+  /* fix me */
 }
