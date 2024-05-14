@@ -8,6 +8,7 @@ import FAQ from '../../Components/FAQ';
 import NavBar from '../../Components/NavBar';
 import Footer from '../../Components/Footer';
 import Highlights from '../../Components/Highlights';
+import { useNavigate } from "react-router-dom";
 
 // const defaultTheme = createTheme({});
 
@@ -16,6 +17,7 @@ export default function HomePage() {
   const darkBlueBase = '#041f60';
   const purple = '#5b5299'
   const lightPurple = '#a6b6f8'
+  const navigate = useNavigate();
 
   const theme = createTheme({
       palette: {
@@ -29,11 +31,29 @@ export default function HomePage() {
     
     },
   });
+  const scrollToSection = (sectionId) => {
+    const sectionElement = document.getElementById(sectionId);
+    const offset = 128;
+    if (sectionElement) {
+      const targetScroll = sectionElement.offsetTop - offset;
+      sectionElement.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({
+        top: targetScroll,
+        behavior: "smooth",
+      });
+    }
+  };
+   const handleNavigateToHighlights = () =>{
+    navigate("/");
+    // Scroll to the FAQ section
+    scrollToSection("highlights");
+  };
 
+   
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <NavBar />
+      <NavBar handleNavigateToHighlights={handleNavigateToHighlights} />
       <Box sx={{ bgcolor: 'background.default' }}>
         <Divider />
         <Highlights/>

@@ -22,6 +22,13 @@ namespace SharedDeskConnect.Models
         public string Address { get; set; }
         [Required]
         public int RenterUserId { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string ContactNumber { get; set; }
+        [Required]
+        public int AvailableCapacity { get; set; }
+        public string Benefits { get; set; }
+
 
     }
 }

@@ -1,7 +1,16 @@
 .card-price {
   position: absolute;
-  bottom: 10px;
+  bottom: 5px;
   right: 10px;
+}
+
+.card-capacity {
+  position: absolute;
+  right: 10px;
+}
+.capacity-container {
+  display: flex;
+  flex-flow: row;
 }
 
 .card-container {
@@ -11,4 +20,10 @@
 .listed-spaces-page {
   margin-left: 100px;
   margin-top: 150px;
+}
+
+
+
+.footer-container {
+
 }

@@ -7,8 +7,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
-import Drawer from "@mui/material/Drawer";
-import MenuIcon from "@mui/icons-material/Menu";
 import SharedDeskConnect from "../Icons/SharedDeskConnect.png";
 import profile from "../Icons/profile.png";
 
@@ -20,7 +18,6 @@ import { SignInModal } from "./SignInModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-
 const logoStyle = {
   width: "140px",
   height: "auto",
@@ -28,23 +25,23 @@ const logoStyle = {
   marginLeft: "-6px",
 };
 
-function NavBar() {
+function NavBar({ handleNavigateToHighlights }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const currentUser = useSelector((state) => state.currentUser);
   const currentUserId = useSelector((state) => state.currentUserID);
-
   const onRentASpaceClick = () => {
     navigate("/listed-spaces");
   };
-  const onListASpaceClick = () => {
-    if(currentUserId!== null)
-    navigate("/list-a-space");
+  const onYourSpacesClick = () => {
+    navigate("/your-spaces");
   };
-
-
-  const [open, setOpen] = useState(false);
+  const onListASpaceClick = () => {
+    if (currentUserId !== null) navigate("/list-a-space");
+  };
+console.log(handleNavigateToHighlights)
+  // const [open, setOpen] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -54,6 +51,7 @@ function NavBar() {
   const handleOpenSignUp = () => {
     setOpenSignUp(true);
   };
+  
 
   const handleCloseSignIn = () => {
     setOpenSignIn(false);
@@ -62,23 +60,23 @@ function NavBar() {
     setOpenSignIn(true);
   };
 
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
+  // const toggleDrawer = (newOpen) => () => {
+  //   setOpen(newOpen);
+  // };
 
-  const scrollToSection = (sectionId) => {
-    const sectionElement = document.getElementById(sectionId);
-    const offset = 128;
-    if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset;
-      sectionElement.scrollIntoView({ behavior: "smooth" });
-      window.scrollTo({
-        top: targetScroll,
-        behavior: "smooth",
-      });
-      setOpen(false);
-    }
-  };
+  // const scrollToSection = (sectionId) => {
+  //   const sectionElement = document.getElementById(sectionId);
+  //   const offset = 128;
+  //   if (sectionElement) {
+  //     const targetScroll = sectionElement.offsetTop - offset;
+  //     sectionElement.scrollIntoView({ behavior: "smooth" });
+  //     window.scrollTo({
+  //       top: targetScroll,
+  //       behavior: "smooth",
+  //     });
+  //     setOpen(false);
+  //   }
+  // };
 
   return (
     <div>
@@ -148,7 +146,7 @@ function NavBar() {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("highlights")}
+                  onClick={handleNavigateToHighlights}
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="body2" color="text.primary">
@@ -156,21 +154,24 @@ function NavBar() {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("pricing")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection("faq")}
+                  onClick={() => () => navigate("/") //then scrollToSection("faq")
+                }
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="body2" color="text.primary">
                     FAQ
                   </Typography>
                 </MenuItem>
+                {isLoggedIn && (
+                  <MenuItem
+                  onClick={() => onYourSpacesClick()}
+                    sx={{ py: "6px", px: "12px" }}
+                  >
+                    <Typography variant="body2" color="text.primary">
+                      Your Spaces
+                    </Typography>
+                  </MenuItem>
+                )}
               </Box>
             </Box>
 
@@ -227,7 +228,7 @@ function NavBar() {
                 </Button>
               </Box>
             )}
-            <Box sx={{ display: { sm: "", md: "none" } }}>
+            {/* <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
                 color="primary"
@@ -256,7 +257,7 @@ function NavBar() {
                   ></Box>
                 </Box>
               </Drawer>
-            </Box>
+            </Box> */}
           </Toolbar>
         </Container>
       </AppBar>

@@ -27,9 +27,9 @@ const items = [
   },
   {
     icon: <SecurityIcon />,
-    title: "Secure transactions",
+    title: "Secure Data",
     description:
-      "Rest assured with secure payment processing and protection against fraudulent activities.",
+      "Rest assured with secure data processing and protection against fraudulent activities.",
   },
   {
     icon: <CalendarMonthIcon />,

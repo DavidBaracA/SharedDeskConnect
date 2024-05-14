@@ -9,6 +9,9 @@ import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import "./ListYourSpacePage.css";
 import ImageUploader from "../../Components/ImageUploader"; // Import ImageUploader component
+import CheckboxList from "../../Components/CheckboxList"; // Import ImageUploader component
+import WifiIcon from "@mui/icons-material/Wifi";
+import { useNavigate } from "react-router-dom";
 
 export const ListYourSpacePage = () => {
   const darkBlueBase = "#041f60";
@@ -26,19 +29,54 @@ export const ListYourSpacePage = () => {
       },
     },
   });
-
+  const navigate = useNavigate();
   const [images, setImages] = React.useState([]);
-  console.log("🚀 ~ ListYourSpacePage ~ images:", images);
+  const [additionalBenefit, setAdditionalBenefit] = useState("");
+  const handleAdditionalBenefitChange = (e) => {
+    setAdditionalBenefit(e.target.value);
+  };
 
   const currentUserId = useSelector((state) => state.currentUserID);
+
+  const [selectedBenefits, setSelectedBenefits] = React.useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
+  const handleBenefitToggle = (index) => {
+    setSelectedBenefits((prevBenefits) => {
+      const newBenefits = [...prevBenefits];
+      newBenefits[index] = !prevBenefits[index];
+      return newBenefits;
+    });
+  };
+
+  // Define an array of objects containing labels and icons for each checkbox item
+  const benefitItems = [
+    { label: "Free Wifi", icon: <WifiIcon /> },
+    { label: "24/7 access", icon: <WifiIcon /> },
+    { label: "Quiet workspace environment", icon: <WifiIcon /> },
+    { label: "Access to printing facilitiest", icon: <WifiIcon /> },
+    { label: "Accessible parking", icon: <WifiIcon /> },
+    { label: "Free coffe/drinks", icon: <WifiIcon /> },
+    { label: "Game room", icon: <WifiIcon /> },
+  ];
 
   const [formData, setFormData] = useState({
     name: "",
     city: "",
     price: 0,
     maxCapacity: 0,
+    currentCapacity: 0,
     description: "",
     address: "",
+    contactNumber: "",
+    benefits: [],
   });
 
   const handleImageUpload = async (spaceId) => {
@@ -74,17 +112,39 @@ export const ListYourSpacePage = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log("form:", formData);
-    const formDataWithUserId = { ...formData, renterUserId: currentUserId };
+    // Filter the benefit items based on selected checkboxes
+   
 
     e.preventDefault();
     try {
+      const selectedBenefitItems = benefitItems.filter(
+        (item, index) => selectedBenefits[index]
+      );
+      
+  
+      // Extract the labels of the selected benefit items
+      let selectedBenefitLabels = selectedBenefitItems.map((item) => item.label);
+  
+      if (additionalBenefit !== "") {
+        selectedBenefitLabels.push(additionalBenefit);
+      }
+      const stringBenefits = selectedBenefitLabels.join(",")
+      // Update the formData object to include the selected benefits
+      const updatedFormData = {
+        ...formData,
+        benefits: stringBenefits,
+        renterUserId: currentUserId,
+  
+      };
+  
+      
+      console.log("formsubmit:", updatedFormData);
       const response = await fetch("http://localhost:5100/api/Space", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formDataWithUserId),
+        body: JSON.stringify(updatedFormData),
       });
       if (!response.ok) {
         throw new Error("Failed to add space");
@@ -101,10 +161,13 @@ export const ListYourSpacePage = () => {
         city: "",
         price: 0,
         maxCapacity: 0,
+        currentCapacity:0,
         description: "",
         address: "",
+        contactNumber: "",
+        benefits: [],
       });
-      // Optionally, redirect to another page or show a success message
+      navigate("/listed-spaces"); // Optionally, redirect to another page or show a success message
     } catch (error) {
       console.error("Error:", error);
       // Handle errors, show error messages, etc.
@@ -149,6 +212,14 @@ export const ListYourSpacePage = () => {
           onChange={handleChange}
           variant="outlined"
         />
+         <TextField
+          label="Curent tenants"
+          name="currentCapacity"
+          type="number"
+          value={formData.currentCapacity}
+          onChange={handleChange}
+          variant="outlined"
+        />
         <TextField
           label="Description"
           name="description"
@@ -167,6 +238,33 @@ export const ListYourSpacePage = () => {
           multiline
           rows={2}
         />
+        <TextField
+          label="Contact number"
+          name="contactNumber"
+          value={formData.contactNumber}
+          onChange={handleChange}
+          variant="outlined"
+          multiline
+        />
+        <Typography variant="body1" sx={{ color: "Black", fontSize: 20 }}>
+          Your Space Facilities
+        </Typography>
+        <CheckboxList
+          items={benefitItems}
+          selectedItems={selectedBenefits}
+          onItemToggle={handleBenefitToggle}
+        />
+        <div style={{ marginTop: "20px" }}>
+          <Typography variant="h6">Additional Facilities</Typography>
+          <TextField
+            label="Optional"
+            value={additionalBenefit}
+            onChange={handleAdditionalBenefitChange}
+            variant="outlined"
+            fullWidth
+            style={{ marginBottom: "10px" }}
+          />
+        </div>
         <Typography variant="body1" sx={{ color: "Black", fontSize: 20 }}>
           Add your Images here
         </Typography>

@@ -1,0 +1,15 @@
+.card-price {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .card-container {
+    position: relative;
+  }
+  
+  .listed-spaces-page {
+    margin-left: 100px;
+    margin-top: 150px;
+  }
+  

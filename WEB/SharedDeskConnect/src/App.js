@@ -4,6 +4,7 @@ import HomePage from './Pages/HomePage/HomePage';
 import { ListedSpacesPage } from './Pages/ListedSpacesPage/ListedSpacesPage';
 import { ListYourSpacePage } from './Pages/ListYourSpacePage/ListYourSpacePage';
 import { SpaceDetailsPage } from './Pages/SpaceDetailsPage/SpaceDetailsPage';
+import { YourSpaces } from './Pages/YourSpaces/YourSpaces';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
       <Route path="/list-a-space" element={< ListYourSpacePage/>} />
       <Route path="/space-details/:id" element={<SpaceDetailsPage />} />
 
-      <Route path="/your-spaces" element={<ListedSpacesPage />} />
+      <Route path="/your-spaces" element={<YourSpaces />} />
       <Route path="/your-rentals" element={<ListedSpacesPage />} />
     </Routes>
   </BrowserRouter>

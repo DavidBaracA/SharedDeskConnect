@@ -8,12 +8,14 @@ import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 import { getImageTypeFromBase64 } from "./helper";
 import { useNavigate } from "react-router-dom";
+import BoyIcon from "@mui/icons-material/Boy";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export const SpaceCard = (props) => {
   const space = props?.space;
+  const editMode = props?.editMode;
   const [imageList, setImageList] = useState([]);
   const [isFavourite, setIsFavourite] = useState(false);
   const navigate = useNavigate();
@@ -48,9 +50,9 @@ export const SpaceCard = (props) => {
 
   const handleViewDetails = () => {
     // Navigate to the details page for the selected space
-      navigate(`/space-details/:${space?.spaceID}`);
-   };
-
+    navigate(`/space-details/:${space?.spaceID}?editMode=${editMode}`);
+  };
+  console.log("spce", space);
   return (
     <Card
       sx={{
@@ -74,8 +76,18 @@ export const SpaceCard = (props) => {
           {space?.city}, {space?.address}
         </Typography>
         <span className="card-price">{space.price}$</span>
+        <div className="card-capacity">
+          <div className="capacity-container">
+          <span>
+            <BoyIcon />
+          </span>
+          <span>
+            {space.maxCapacity -space.availableCapacity}/{space.maxCapacity}
+          </span>
+          </div>
+        </div>
       </CardContent>
-      <CardActions>
+      <CardActions className="footer-container">
         <Button size="small" onClick={handleIsFavourite}>
           {!isFavourite ? (
             <FavoriteBorderIcon color="primary" />
@@ -84,7 +96,7 @@ export const SpaceCard = (props) => {
           )}
         </Button>
         <Button size="small" onClick={handleViewDetails}>
-          View Details
+          {editMode ? "Edit space" : " View Details"}
         </Button>
       </CardActions>
     </Card>

@@ -19,7 +19,6 @@ export const SignInModal = (props) => {
     username: "",
     password: "",
   });
-
   console.log("user", users);
   const handleChange = (event) => {
     setFormValues({
@@ -51,6 +50,8 @@ export const SignInModal = (props) => {
     event.preventDefault();
     // TO DOO
     // ADD VALIDATION ON SIGN IN
+console.log("fdfd",formValues)
+
     if (formValues.username && formValues.password) {
       if (
         isUserAuthenticated(users, formValues.username, formValues.password)
@@ -67,6 +68,10 @@ export const SignInModal = (props) => {
           }
         });
         handleClose();
+      }
+      else{
+      alert("Invalid Credentials");
+
       }
     } else {
       alert("Some fields are not accepted(change later)!");

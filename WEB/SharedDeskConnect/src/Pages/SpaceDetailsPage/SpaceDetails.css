@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  justify-content: space-between; /* Align items in a row with space between them */
+  align-items: flex-start;
+  margin-top: 120px; /* Align items to the top */
+}
+
+.gallery-styling {
+  margin: auto; /* Center the ImageGallery */
+  width: 50%; /* Adjust the width of the ImageGallery */
+  z-index: 1;
+}
+
+.space-details {
+  margin: auto;
+  display: grid;
+  gap: 15px;
+}
+.button-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.description-box {
+  border: 2px solid #ccc; /* Add border with color */
+  padding: 20px; /* Add padding inside the box */
+  margin-top: 20px; /* Add margin at the top */
+  overflow: auto;
+}
