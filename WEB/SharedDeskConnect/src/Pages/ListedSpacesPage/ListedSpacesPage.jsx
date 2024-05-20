@@ -1,14 +1,21 @@
-import { ThemeProvider } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
+import React, { useState, useEffect } from "react";
+import {
+  ThemeProvider,
+  CssBaseline,
+  Box,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { createTheme } from "@mui/material";
+import {
+  ArrowUpward,
+  ArrowDownward,
+  ArrowForward,
+} from "@mui/icons-material";
 import NavBar from "../../Components/NavBar";
-import * as React from "react";
-import { useState, useEffect } from "react";
 import SearchInput from "../../Components/SearchInput";
-import Button from "@mui/material/Button";
-import "./ListedSpacesPage.css";
 import { SpaceCard } from "../../Components/SpaceCard";
+import "./ListedSpacesPage.css";
 
 export const ListedSpacesPage = () => {
   const darkBlueBase = "#041f60";
@@ -33,15 +40,13 @@ export const ListedSpacesPage = () => {
 
   const getSpaces = async () => {
     try {
-      const response = await fetch("http://localhost:5100/api/Space/GetSpaces")
-        .then((response) => response.json())
-        .then((data) => {
-          setSpaces(data);
-          setFilteredSpaces(data);
-        });
+      const response = await fetch("http://localhost:5100/api/Space/GetSpaces");
+      const data = await response.json();
+      setSpaces(data);
+      setFilteredSpaces(data);
 
-      if (!response) {
-        throw new Error(`HTTP error! Status: ${response}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error fetching spaces:", error.message);
@@ -53,7 +58,6 @@ export const ListedSpacesPage = () => {
   }, []);
 
   const handleSearchChange = (searchTerm) => {
-    // Filter spaces based on search term
     const filtered = spaces.filter((space) =>
       space.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -61,18 +65,36 @@ export const ListedSpacesPage = () => {
   };
 
   const handleSortBy = (property) => {
-    // Sort spaces based on the selected property
     let sorted;
-    if (property === "price") {
-      sorted = [...filteredSpaces].sort((a, b) => a.price - b.price);
-    } else if (property === "address") {
-      sorted = [...filteredSpaces].sort((a, b) =>
-        a.address.localeCompare(b.address)
-      );
-    } else if (property === "availableCapacity") {
-      sorted = [...filteredSpaces].sort(
-        (a, b) => b.availableCapacity - a.availableCapacity
-      );
+    switch (property) {
+      case "lowPrice":
+        sorted = [...filteredSpaces].sort((a, b) => a.price - b.price);
+        break;
+      case "highPrice":
+        sorted = [...filteredSpaces].sort((a, b) => b.price - a.price);
+        break;
+      case "startAlphabet":
+        sorted = [...filteredSpaces].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        break;
+      case "endAlphabet":
+        sorted = [...filteredSpaces].sort((a, b) =>
+          b.name.localeCompare(a.name)
+        );
+        break;
+      case "lowCapacity":
+        sorted = [...filteredSpaces].sort(
+          (a, b) => a.availableCapacity - b.availableCapacity
+        );
+        break;
+      case "highCapacity":
+        sorted = [...filteredSpaces].sort(
+          (a, b) => b.availableCapacity - a.availableCapacity
+        );
+        break;
+      default:
+        sorted = filteredSpaces;
     }
     setSortBy(property);
     setFilteredSpaces(sorted);
@@ -83,28 +105,69 @@ export const ListedSpacesPage = () => {
       <CssBaseline />
       <NavBar />
       <div className="listed-spaces-page">
-        <SearchInput onChange={handleSearchChange} />
+        <div className="search-container">
+          <SearchInput onSearchChange={handleSearchChange} />
+        </div>
         <div className="sort-buttons">
           <Button
             variant="outlined"
-            onClick={() => handleSortBy("price")}
-            disabled={sortBy === "price"}
+            onClick={() => handleSortBy("lowPrice")}
+            disabled={sortBy === "lowPrice"}
           >
-            Sort by Price
+            Low Price
+            <IconButton size="small">
+              <ArrowDownward fontSize="inherit" />
+            </IconButton>
           </Button>
           <Button
             variant="outlined"
-            onClick={() => handleSortBy("address")}
-            disabled={sortBy === "address"}
+            onClick={() => handleSortBy("highPrice")}
+            disabled={sortBy === "highPrice"}
           >
-            Sort by Address
+            High Price
+            <IconButton size="small">
+              <ArrowUpward fontSize="inherit" />
+            </IconButton>
           </Button>
           <Button
             variant="outlined"
-            onClick={() => handleSortBy("availableCapacity")}
-            disabled={sortBy === "availableCapacity"}
+            onClick={() => handleSortBy("startAlphabet")}
+            disabled={sortBy === "startAlphabet"}
           >
-            Sort by Available Capacity
+            Start Alphabet
+            <IconButton size="small">
+              <ArrowForward fontSize="inherit" />
+            </IconButton>
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => handleSortBy("endAlphabet")}
+            disabled={sortBy === "endAlphabet"}
+          >
+            End Alphabet
+            <IconButton size="small">
+              <ArrowForward fontSize="inherit" />
+            </IconButton>
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => handleSortBy("lowCapacity")}
+            disabled={sortBy === "lowCapacity"}
+          >
+            Low Capacity
+            <IconButton size="small">
+              <ArrowDownward fontSize="inherit" />
+            </IconButton>
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => handleSortBy("highCapacity")}
+            disabled={sortBy === "highCapacity"}
+          >
+            High Capacity
+            <IconButton size="small">
+              <ArrowUpward fontSize="inherit" />
+            </IconButton>
           </Button>
         </div>
         <Box
@@ -117,7 +180,7 @@ export const ListedSpacesPage = () => {
           }}
         >
           {filteredSpaces.map((space) => (
-            <SpaceCard key={space.spaceID} space={space} />
+            <SpaceCard key={space.spaceID} space={space} editMode={false} />
           ))}
         </Box>
       </div>

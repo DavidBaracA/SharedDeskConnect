@@ -20,13 +20,15 @@
 .listed-spaces-page {
   margin-left: 100px;
   margin-top: 150px;
+  margin-bottom: 50px;
 }
 .sort-buttons {
-  padding: 10px
-}
+  flex-flow: row;
+  padding: 10px;
+  display: flex;
+  gap: 10px;}
 
 
 
-.footer-container {
+/* .footer-container {
   /* fix me */
-}

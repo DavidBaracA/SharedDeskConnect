@@ -11,6 +11,15 @@ import "./ListYourSpacePage.css";
 import ImageUploader from "../../Components/ImageUploader"; // Import ImageUploader component
 import CheckboxList from "../../Components/CheckboxList"; // Import ImageUploader component
 import WifiIcon from "@mui/icons-material/Wifi";
+import HearingIcon from '@mui/icons-material/Hearing';
+import PrintIcon from '@mui/icons-material/Print';
+import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
+import CoffeeMakerIcon from '@mui/icons-material/CoffeeMaker';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
+
+
 import { useNavigate } from "react-router-dom";
 
 export const ListYourSpacePage = () => {
@@ -59,12 +68,12 @@ export const ListYourSpacePage = () => {
   // Define an array of objects containing labels and icons for each checkbox item
   const benefitItems = [
     { label: "Free Wifi", icon: <WifiIcon /> },
-    { label: "24/7 access", icon: <WifiIcon /> },
-    { label: "Quiet workspace environment", icon: <WifiIcon /> },
-    { label: "Access to printing facilitiest", icon: <WifiIcon /> },
-    { label: "Accessible parking", icon: <WifiIcon /> },
-    { label: "Free coffe/drinks", icon: <WifiIcon /> },
-    { label: "Game room", icon: <WifiIcon /> },
+    { label: "24/7 access", icon: <AccessTimeIcon /> },
+    { label: "Quiet workspace environment", icon: <HearingIcon /> },
+    { label: "Access to printing facilitiest", icon: <PrintIcon /> },
+    { label: "Accessible parking", icon: <DirectionsCarFilledIcon /> },
+    { label: "Free coffe/drinks", icon: <CoffeeMakerIcon /> },
+    { label: "Game room", icon: <SportsEsportsIcon /> },
   ];
 
   const [formData, setFormData] = useState({
@@ -138,7 +147,6 @@ export const ListYourSpacePage = () => {
       };
   
       
-      console.log("formsubmit:", updatedFormData);
       const response = await fetch("http://localhost:5100/api/Space", {
         method: "POST",
         headers: {
@@ -167,7 +175,7 @@ export const ListYourSpacePage = () => {
         contactNumber: "",
         benefits: [],
       });
-      navigate("/listed-spaces"); // Optionally, redirect to another page or show a success message
+      navigate("/your-spaces"); // Optionally, redirect to another page or show a success message
     } catch (error) {
       console.error("Error:", error);
       // Handle errors, show error messages, etc.

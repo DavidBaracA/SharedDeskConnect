@@ -40,7 +40,9 @@ function NavBar({ handleNavigateToHighlights }) {
   const onListASpaceClick = () => {
     if (currentUserId !== null) navigate("/list-a-space");
   };
-console.log(handleNavigateToHighlights)
+
+  // fix navigation to highlights
+// console.log(handleNavigateToHighlights)
   // const [open, setOpen] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
@@ -228,36 +230,6 @@ console.log(handleNavigateToHighlights)
                 </Button>
               </Box>
             )}
-            {/* <Box sx={{ display: { sm: "", md: "none" } }}>
-              <Button
-                variant="text"
-                color="primary"
-                aria-label="menu"
-                onClick={toggleDrawer(true)}
-                sx={{ minWidth: "30px", p: "4px" }}
-              >
-                <MenuIcon />
-              </Button>
-              <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-                <Box
-                  sx={{
-                    minWidth: "60dvw",
-                    p: 2,
-                    backgroundColor: "background.paper",
-                    flexGrow: 1,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "end",
-                      flexGrow: 1,
-                    }}
-                  ></Box>
-                </Box>
-              </Drawer>
-            </Box> */}
           </Toolbar>
         </Container>
       </AppBar>

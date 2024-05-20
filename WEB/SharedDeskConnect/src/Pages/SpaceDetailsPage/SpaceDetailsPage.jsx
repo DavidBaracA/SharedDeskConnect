@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
-import { useNavigate } from "react-router-dom";
 import {
   Button,
   Accordion,
@@ -9,15 +8,17 @@ import {
   AccordionDetails,
   Typography,
   TextField,
+  createTheme,
+  ThemeProvider,
+  CssBaseline,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import NavBar from "../../Components/NavBar";
+import PhoneIcon from "@mui/icons-material/Phone";
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
-import { createTheme } from "@mui/material";
-import NavBar from "../../Components/NavBar";
-import { ThemeProvider } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import { useLocation } from "react-router-dom";
 
 export const SpaceDetailsPage = () => {
   const darkBlueBase = "#041f60";
@@ -27,11 +28,19 @@ export const SpaceDetailsPage = () => {
   const cleanedId = id.substring(1);
   const [imageList, setImageList] = useState([]);
   const [spaceDetails, setSpaceDetails] = useState(null);
-  const [contactExpanded, setContactExpanded] = useState(false); // State for contact accordion
+  const [contactExpanded, setContactExpanded] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const editMode = searchParams.get("editMode");
+
+  useEffect(() => {
+    const isEdit = searchParams.get("editMode");
+    setEditMode(isEdit === "true");
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchSpaceDetails = async () => {
@@ -50,11 +59,7 @@ export const SpaceDetailsPage = () => {
     };
 
     fetchSpaceDetails();
-
-    return () => {
-      // Cleanup function if needed
-    };
-  }, []);
+  }, [cleanedId]);
 
   const getImages = async (cleanedId) => {
     try {
@@ -78,19 +83,17 @@ export const SpaceDetailsPage = () => {
 
   useEffect(() => {
     getImages(cleanedId);
-  }, []);
+  }, [cleanedId]);
 
-  const handleBackButton = () => {
-    !editMode ? navigate("/listed-spaces") : navigate("/your-spaces");
-  };
+  const handleBackButton = useCallback(() => {
+    navigate(editMode ? "/your-spaces" : "/listed-spaces");
+  }, [editMode, navigate]);
 
   const handleContactClick = () => {
     setContactExpanded(!contactExpanded);
   };
 
-  
   const handleAvailableCapacityChange = (event) => {
-    // Update the available capacity in state
     setSpaceDetails((prevSpaceDetails) => ({
       ...prevSpaceDetails,
       availableCapacity: event.target.value,
@@ -112,9 +115,17 @@ export const SpaceDetailsPage = () => {
       if (!response.ok) {
         throw new Error("Failed to update space details");
       }
+      setSnackbarMessage("Available capacity updated successfully");
+      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error updating space details:", error.message);
+      setSnackbarMessage("Failed to update available capacity");
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   if (!spaceDetails) {
@@ -139,14 +150,9 @@ export const SpaceDetailsPage = () => {
         <CssBaseline />
         <NavBar />
         <div className="button-container">
-          <Button
-            onClick={handleBackButton}
-            color="primary"
-            variant="contained"
-          >
-           {editMode ? "Back to Your Spaces" : "Back to Listed Spaces"} 
+          <Button onClick={handleBackButton} color="primary" variant="contained">
+            {editMode ? "Back to Your Spaces" : "Back to Listed Spaces"}
           </Button>
-        
         </div>
         <div className="container">
           <div className="gallery-styling">
@@ -159,13 +165,14 @@ export const SpaceDetailsPage = () => {
             />
           </div>
           <div className="space-details">
-            <h2>{spaceDetails.name}</h2>
+            <h2 style={{ margin: 0 }}>{spaceDetails.name}</h2>
             <div className="description-box">
               <p>Description: {spaceDetails.description}</p>
             </div>
             <p>City: {spaceDetails.city}</p>
             <p>Address: {spaceDetails.address}</p>
-            <p>Price: {spaceDetails.price}</p>
+            <p>Price: {spaceDetails.price + "\u20AC"}</p>
+            <p>Maximum Capacity: {spaceDetails.maxCapacity}</p>
             {editMode ? (
               <TextField
                 id="availableCapacity"
@@ -174,7 +181,6 @@ export const SpaceDetailsPage = () => {
                 fullWidth
                 value={spaceDetails.availableCapacity}
                 onChange={handleAvailableCapacityChange}
-                disabled={!editMode}
               />
             ) : (
               <p>Available Capacity: {spaceDetails.availableCapacity}</p>
@@ -185,25 +191,37 @@ export const SpaceDetailsPage = () => {
                 aria-controls="contact-details-content"
                 id="contact-details-header"
               >
-                <Typography>Contact </Typography>
+                <Typography>Contact Number</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  Owner Contact Number: {spaceDetails.contactNumber}
+                  <span style={{ paddingRight: 5 }}>
+                    <PhoneIcon fontSize={"10px"} />
+                  </span>
+                  {spaceDetails.contactNumber}
                 </Typography>
               </AccordionDetails>
             </Accordion>
             {editMode && (
-            <Button
-              onClick={updateSpaceDetails}
-              color="primary"
-              variant="contained"
-            >
-              Save Changes
-            </Button>
-          )}
+              <Button onClick={updateSpaceDetails} color="primary" variant="contained">
+                Save Changes
+              </Button>
+            )}
           </div>
         </div>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarMessage.includes("successfully") ? "success" : "error"}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </ThemeProvider>
     </>
   );

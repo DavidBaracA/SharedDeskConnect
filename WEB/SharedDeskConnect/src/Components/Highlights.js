@@ -79,7 +79,7 @@ export default function Highlights() {
           <Typography component="h2" variant="h4">
             Highlights
           </Typography>
-          <Typography variant="body1" sx={{ color: "grey.400" }}>
+          <Typography variant="body1" sx={{ color: "text.primary" }}>
             Embark on a journey of exploration as you enter our platform for
             space rentals. Experience the convenience of a streamlined interface
             and the assurance of meticulous attention to detail, ensuring your
