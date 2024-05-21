@@ -35,23 +35,7 @@ export const SignUpModal = (props) => {
       [event.target.name]: event.target.value,
     });
   };
-  // const [usernameDB, setUsernameDB] = useState({})
-
-  // const getUserByUsername = async (username) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5100/api/User/username/${username}`)
-  //       .then(response => response.json())
-  //       .then(data => {setUsernameDB(data)});
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error adding reservation:', error.message);
-  //   }
-
-  // };
-
+ 
   const getUsers = async () => {
     try {
       const response = await fetch("http://localhost:5100/api/User/GetUsers")
@@ -88,7 +72,9 @@ export const SignUpModal = (props) => {
       else {
         const responseData = await response.json();
         const userID = responseData.userID
-        dispatch({type:"LOGIN",payload:{username:username,currentId:userID}})
+        const userEmail = responseData.email
+
+        dispatch({type:"LOGIN",payload:{username:username,currentId:userID,email:userEmail}})
       }
     } catch (error) {
       console.error("Error adding user:", error.message);

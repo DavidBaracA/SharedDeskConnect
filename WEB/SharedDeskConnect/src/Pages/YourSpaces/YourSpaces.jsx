@@ -109,9 +109,9 @@ export const YourSpaces = () => {
           <div>
             <p>
               You did not add any spaces yet, click on{" "}
-              <a href="#" onClick={() => navigate("/list-a-space")}>
+              <span  onClick={() => navigate("/list-a-space")}>
                 list a space
-              </a>{" "}
+              </span>{" "}
               to add one.
             </p>
           </div>

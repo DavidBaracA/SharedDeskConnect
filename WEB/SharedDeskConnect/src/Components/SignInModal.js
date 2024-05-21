@@ -19,7 +19,6 @@ export const SignInModal = (props) => {
     username: "",
     password: "",
   });
-  console.log("user", users);
   const handleChange = (event) => {
     setFormValues({
       ...formValues,
@@ -50,7 +49,6 @@ export const SignInModal = (props) => {
     event.preventDefault();
     // TO DOO
     // ADD VALIDATION ON SIGN IN
-console.log("fdfd",formValues)
 
     if (formValues.username && formValues.password) {
       if (
@@ -63,7 +61,7 @@ console.log("fdfd",formValues)
           ) {
             dispatch({
               type: "LOGIN",
-              payload: { username: user.username, currentId: user.userID },
+              payload: { username: user.username, currentId: user.userID, email:user.email },
             });
           }
         });

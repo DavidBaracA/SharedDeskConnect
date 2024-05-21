@@ -1,5 +1,6 @@
 using SharedDeskConnect.Models;
 using Microsoft.EntityFrameworkCore;
+using SharedDeskConnect.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("sharedDeskConnectionDBCon")));
-
-var app = builder.Build();
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>(); var app = builder.Build();
 
 app.UseCors(builder =>
 {

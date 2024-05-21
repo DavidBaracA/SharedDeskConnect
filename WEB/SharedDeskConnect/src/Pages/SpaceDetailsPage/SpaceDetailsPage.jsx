@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import {
@@ -12,10 +12,13 @@ import {
   ThemeProvider,
   CssBaseline,
   Snackbar,
+  Switch,
+  Tooltip,
   Alert,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NavBar from "../../Components/NavBar";
+import { useSelector } from "react-redux";
 import PhoneIcon from "@mui/icons-material/Phone";
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -32,11 +35,15 @@ export const SpaceDetailsPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [notifyOnChange, setNotifyOnChange] = useState(false); // New state for notification preference
 
   const navigate = useNavigate();
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location]);
 
+  const currentUserId = useSelector((state) => state.currentUserID);
+  const currentUserEmail = useSelector((state) => state.currentUserEmail); // Assuming you have user email in the state
+console.log("email",currentUserEmail)
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
     setEditMode(isEdit === "true");
@@ -100,26 +107,78 @@ export const SpaceDetailsPage = () => {
     }));
   };
 
-  const updateSpaceDetails = async () => {
+  const updateSpaceAvailability = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5100/api/Space/${cleanedId}`,
+        `http://localhost:5100/api/Notification/UpdateAvailability`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(spaceDetails),
+          body: JSON.stringify({
+            SpaceId: cleanedId,
+            NewCapacity: spaceDetails.availableCapacity,
+          }),
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to update space details");
+        throw new Error("Failed to update space availability and send notifications");
       }
       setSnackbarMessage("Available capacity updated successfully");
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error updating space details:", error.message);
-      setSnackbarMessage("Failed to update available capacity");
+      console.error("Error updating space availability and sending notifications:", error.message);
+      setSnackbarMessage("Failed to update available capacity and send notifications");
+      setSnackbarOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    const fetchNotificationPreference = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5100/api/Notification/Notify?spaceId=${Number(cleanedId)}&userId=${currentUserId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch notification preference");
+        }
+        const data = await response.json();
+        setNotifyOnChange(data.notify);
+      } catch (error) {
+        console.error("Error fetching notification preference:", error.message);
+      }
+    };
+
+    fetchNotificationPreference();
+  }, [cleanedId, currentUserId]);
+
+  const handleNotifyChange = async (checked) => {
+    try {
+      const notificationData = {
+        SpaceId: String(cleanedId),
+        UserId: String(currentUserId),
+        Email: currentUserEmail,
+      };
+      const notifyResponse = await fetch(
+        `http://localhost:5100/api/Notification/Notify`,
+        {
+          method: checked ? "POST" : "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(notificationData),
+        }
+      );
+      if (!notifyResponse.ok) {
+        throw new Error("Failed to set notification preference");
+      }
+      setNotifyOnChange(checked);
+      setSnackbarMessage(checked ? "Notification enabled" : "Notification disabled");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error setting notification preference:", error.message);
+      setSnackbarMessage("Failed to update notification preference");
       setSnackbarOpen(true);
     }
   };
@@ -150,7 +209,11 @@ export const SpaceDetailsPage = () => {
         <CssBaseline />
         <NavBar />
         <div className="button-container">
-          <Button onClick={handleBackButton} color="primary" variant="contained">
+          <Button
+            onClick={handleBackButton}
+            color="primary"
+            variant="contained"
+          >
             {editMode ? "Back to Your Spaces" : "Back to Listed Spaces"}
           </Button>
         </div>
@@ -183,7 +246,15 @@ export const SpaceDetailsPage = () => {
                 onChange={handleAvailableCapacityChange}
               />
             ) : (
-              <p>Available Capacity: {spaceDetails.availableCapacity}</p>
+              <div>
+                <Tooltip title="Keep me updated if a space is available">
+                  <Switch
+                    checked={notifyOnChange}
+                    onChange={(e) => handleNotifyChange(e.target.checked)}
+                  />
+                </Tooltip>
+                <p>Available Capacity: {spaceDetails.availableCapacity}</p>
+              </div>
             )}
             <Accordion expanded={contactExpanded} onChange={handleContactClick}>
               <AccordionSummary
@@ -203,7 +274,11 @@ export const SpaceDetailsPage = () => {
               </AccordionDetails>
             </Accordion>
             {editMode && (
-              <Button onClick={updateSpaceDetails} color="primary" variant="contained">
+              <Button
+                onClick={updateSpaceAvailability}
+                color="primary"
+                variant="contained"
+              >
                 Save Changes
               </Button>
             )}
@@ -216,7 +291,9 @@ export const SpaceDetailsPage = () => {
         >
           <Alert
             onClose={handleSnackbarClose}
-            severity={snackbarMessage.includes("successfully") ? "success" : "error"}
+            severity={
+              snackbarMessage.includes("successfully") ? "success" : "error"
+            }
             sx={{ width: "100%" }}
           >
             {snackbarMessage}

@@ -12,6 +12,8 @@ namespace SharedDeskConnect.Models
         public DbSet<Space> Spaces { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<NotificationPreference> NotificationPreferences { get; set; }
+
 
 
 
