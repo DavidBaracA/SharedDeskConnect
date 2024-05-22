@@ -81,7 +81,7 @@ namespace SharedDeskConnect.Controllers
 
                 foreach (var userEmail in usersToNotify)
                 {
-                    await _emailService.SendEmailAsync(userEmail, "A spot has opened up!",
+                    await _emailService.SendEmailAsync(userEmail, "Hello from SharedDeskConect!",
                         "A spot has opened up in the space you wanted. Book it now!");
                 }
             }

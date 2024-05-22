@@ -8,11 +8,7 @@ import {
   Pagination,
 } from "@mui/material";
 import { createTheme } from "@mui/material";
-import {
-  ArrowUpward,
-  ArrowDownward,
-  ArrowForward,
-} from "@mui/icons-material";
+import { ArrowUpward, ArrowDownward, ArrowForward } from "@mui/icons-material";
 import NavBar from "../../Components/NavBar";
 import SearchInput from "../../Components/SearchInput";
 import { SpaceCard } from "../../Components/SpaceCard";
@@ -197,13 +193,14 @@ export const ListedSpacesPage = () => {
             gap: "15px",
             flexDirection: "row",
             flexWrap: "wrap",
+            justifyContent: "flex-start",
           }}
         >
           {paginatedSpaces.map((space) => (
             <SpaceCard key={space.spaceID} space={space} editMode={false} />
           ))}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
           <Pagination
             count={totalPages}
             page={currentPage}

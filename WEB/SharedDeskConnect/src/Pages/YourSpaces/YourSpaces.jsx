@@ -6,7 +6,6 @@ import NavBar from "../../Components/NavBar";
 import * as React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import "./YourSpaces.css";
 import { SpaceCard } from "../../Components/SpaceCard";
@@ -28,7 +27,6 @@ export const YourSpaces = () => {
     },
   });
 
-  const navigate = useNavigate();
   const [spaces, setSpaces] = useState([]);
   const currentUserId = useSelector((state) => state.currentUserID);
 
@@ -84,7 +82,7 @@ export const YourSpaces = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
-      <div className="listed-spaces-page">
+      <div className="your-spaces-page">
         <h2>Your Spaces</h2>
         {currentUserSpaces.length > 0 ? (
           <Box
@@ -109,9 +107,9 @@ export const YourSpaces = () => {
           <div>
             <p>
               You did not add any spaces yet, click on{" "}
-              <span  onClick={() => navigate("/list-a-space")}>
+              <a  href="/list-a-space">
                 list a space
-              </span>{" "}
+              </a>{" "}
               to add one.
             </p>
           </div>

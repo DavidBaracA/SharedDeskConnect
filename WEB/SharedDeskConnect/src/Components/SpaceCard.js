@@ -9,8 +9,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import BoyIcon from "@mui/icons-material/Boy";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -22,13 +20,10 @@ import { getImageTypeFromBase64 } from "./helper";
 export const SpaceCard = (props) => {
   const { space, editMode, onDelete } = props;
   const [imageList, setImageList] = useState([]);
-  const [isFavourite, setIsFavourite] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State to manage modal visibility
   const navigate = useNavigate();
 
-  const handleIsFavourite = () => {
-    setIsFavourite(!isFavourite);
-  };
+
 
   const getImages = async (spaceId) => {
     try {
@@ -112,15 +107,6 @@ export const SpaceCard = (props) => {
         </div>
       </CardContent>
       <CardActions className="footer-container">
-        {editMode !== true && (
-          <Button size="small" onClick={handleIsFavourite}>
-            {!isFavourite ? (
-              <FavoriteBorderIcon color="primary" />
-            ) : (
-              <FavoriteIcon color="primary" />
-            )}
-          </Button>
-        )}
         <Button size="small" onClick={handleViewDetails}>
           {editMode === true ? (
             <EditIcon fontSize="small" sx={{ paddingRight: "5px" }} />

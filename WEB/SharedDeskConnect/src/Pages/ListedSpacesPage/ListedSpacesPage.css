@@ -18,17 +18,19 @@
 }
 
 .listed-spaces-page {
-  margin-left: 100px;
-  margin-top: 150px;
-  margin-bottom: 50px;
+  margin: 150px 200px 50px 200px;
 }
 .sort-buttons {
   flex-flow: row;
   padding: 10px;
   display: flex;
-  gap: 10px;}
+  gap: 10px;
+}
 
-
+.search-container {
+  display: flex;
+  justify-content: center;
+}
 
 /* .footer-container {
   /* fix me */

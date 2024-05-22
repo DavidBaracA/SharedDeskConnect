@@ -22,6 +22,10 @@ import { useSelector } from "react-redux";
 import PhoneIcon from "@mui/icons-material/Phone";
 import InfoIcon from "@mui/icons-material/Info";
 import BenefitsList from "../../Components/BenefitsList";
+import Divider from "@mui/material/Divider";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import PlaceIcon from "@mui/icons-material/Place";
+
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
 
@@ -37,7 +41,7 @@ export const SpaceDetailsPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [notifyOnChange, setNotifyOnChange] = useState(false); // New state for notification preference
+  const [notifyOnChange, setNotifyOnChange] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,7 +51,7 @@ export const SpaceDetailsPage = () => {
   );
 
   const currentUserId = useSelector((state) => state.currentUserID);
-  const currentUserEmail = useSelector((state) => state.currentUserEmail); // Assuming you have user email in the state
+  const currentUserEmail = useSelector((state) => state.currentUserEmail);
   console.log("email", currentUserEmail);
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
@@ -112,6 +116,46 @@ export const SpaceDetailsPage = () => {
     }));
   };
 
+  const handleTitleChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      name: event.target.value,
+    }));
+  };
+
+  const handlePriceChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      price: event.target.value,
+    }));
+  };
+  const handleAddressChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      address: event.target.value,
+    }));
+  };
+  const handleCityChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      city: event.target.value,
+    }));
+  };
+
+  const handleMaxCapacityChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      maxCapacity: event.target.value,
+    }));
+  };
+
+  const handleContactNumberChange = (event) => {
+    setSpaceDetails((prevSpaceDetails) => ({
+      ...prevSpaceDetails,
+      contactNumber: event.target.value,
+    }));
+  };
+
   const updateSpaceAvailability = async () => {
     try {
       const response = await fetch(
@@ -142,6 +186,30 @@ export const SpaceDetailsPage = () => {
       setSnackbarMessage(
         "Failed to update available capacity and send notifications"
       );
+      setSnackbarOpen(true);
+    }
+  };
+
+  const updateSpaceDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/Space/${cleanedId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(spaceDetails),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update space details");
+      }
+      setSnackbarMessage("Space details updated successfully");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error updating space details:", error.message);
+      setSnackbarMessage("Failed to update space details");
       setSnackbarOpen(true);
     }
   };
@@ -244,16 +312,86 @@ export const SpaceDetailsPage = () => {
             />
             <div className="description-box">
               <p>Description: {spaceDetails.description}</p>
-            <BenefitsList items={spaceDetails.benefits.split(",")} />
-
+              <BenefitsList items={spaceDetails.benefits.split(",")} />
             </div>
           </div>
           <div className="space-details">
-            <h2 style={{ margin: 0 }}>{spaceDetails.name}</h2>
-            <p>City: {spaceDetails.city}</p>
-            <p>Address: {spaceDetails.address}</p>
-            <p>Price: {spaceDetails.price + "\u20AC"}</p>
-            <p>Maximum Capacity: {spaceDetails.maxCapacity}</p>
+            {editMode ? (
+              <TextField
+                id="name"
+                label="Title"
+                variant="outlined"
+                fullWidth
+                value={spaceDetails.name}
+                onChange={handleTitleChange}
+                style={{ marginBottom: "10px" }}
+              />
+            ) : (
+              <h2 style={{ margin: 0 }}>{spaceDetails.name}</h2>
+            )}
+
+            {editMode ? (
+              <>
+                <TextField
+                  id="city"
+                  label="City"
+                  variant="outlined"
+                  fullWidth
+                  value={spaceDetails.city}
+                  onChange={handleCityChange}
+                  style={{ marginBottom: "10px" }}
+                />
+                <TextField
+                  id="address"
+                  label="Address"
+                  variant="outlined"
+                  fullWidth
+                  value={spaceDetails.address}
+                  onChange={handleAddressChange}
+                  style={{ marginBottom: "10px" }}
+                />
+                <TextField
+                  id="price"
+                  label="Price"
+                  variant="outlined"
+                  fullWidth
+                  value={spaceDetails.price}
+                  onChange={handlePriceChange}
+                  style={{ marginBottom: "10px" }}
+                />
+                <TextField
+                  id="maxCapacity"
+                  label="Maximum Capacity"
+                  variant="outlined"
+                  fullWidth
+                  value={spaceDetails.maxCapacity}
+                  onChange={handleMaxCapacityChange}
+                  style={{ marginBottom: "10px" }}
+                />
+              </>
+            ) : (
+              <>
+                <Divider />
+
+                <p className="switch-container">
+                  <LocationCityIcon sx={{marginRight: '10px'}} />
+                  City: {spaceDetails.city}
+                </p>
+                <Divider />
+
+                <p className="switch-container">
+                  <PlaceIcon sx={{marginRight: '5px'}} />
+                  Address: {spaceDetails.address}
+                </p>
+                <Divider />
+
+                <p>Price: {spaceDetails.price + "\u20AC"}</p>
+                <Divider />
+
+                <p>Maximum Capacity: {spaceDetails.maxCapacity}</p>
+                <Divider />
+              </>
+            )}
             {editMode ? (
               <TextField
                 id="availableCapacity"
@@ -262,6 +400,7 @@ export const SpaceDetailsPage = () => {
                 fullWidth
                 value={spaceDetails.availableCapacity}
                 onChange={handleAvailableCapacityChange}
+                style={{ marginBottom: "10px" }}
               />
             ) : (
               <div>
@@ -289,17 +428,32 @@ export const SpaceDetailsPage = () => {
                 <Typography>Contact Number</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
-                  <span style={{ paddingRight: 5 }}>
-                    <PhoneIcon fontSize={"10px"} />
-                  </span>
-                  {spaceDetails.contactNumber}
-                </Typography>
+                {editMode ? (
+                  <TextField
+                    id="contactNumber"
+                    label="Contact Number"
+                    variant="outlined"
+                    fullWidth
+                    value={spaceDetails.contactNumber}
+                    onChange={handleContactNumberChange}
+                    style={{ marginBottom: "10px" }}
+                  />
+                ) : (
+                  <Typography>
+                    <span style={{ paddingRight: 5 }}>
+                      <PhoneIcon fontSize={"10px"} />
+                    </span>
+                    {spaceDetails.contactNumber}
+                  </Typography>
+                )}
               </AccordionDetails>
             </Accordion>
             {editMode && (
               <Button
-                onClick={updateSpaceAvailability}
+                onClick={() => {
+                  updateSpaceDetails();
+                  updateSpaceAvailability();
+                }}
                 color="primary"
                 variant="contained"
               >

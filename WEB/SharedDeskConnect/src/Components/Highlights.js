@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import SecurityIcon from "@mui/icons-material/Security";
+import EmailIcon from '@mui/icons-material/Email';
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PeopleIcon from "@mui/icons-material/People";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -26,10 +26,10 @@ const items = [
       "Choose from a range of pricing options tailored to your budget and usage requirements.",
   },
   {
-    icon: <SecurityIcon />,
-    title: "Secure Data",
+    icon: <EmailIcon />,
+    title: "Mail Notification",
     description:
-      "Rest assured with secure data processing and protection against fraudulent activities.",
+      "You can choose to be notified if there are updeates regarding a space youre a interested in.",
   },
   {
     icon: <CalendarMonthIcon />,

@@ -39,11 +39,9 @@ function NavBar({ handleNavigateToHighlights }) {
   };
   const onListASpaceClick = () => {
     if (currentUserId !== null) navigate("/list-a-space");
+    else handleOpenSignIn()
   };
 
-  // fix navigation to highlights
-// console.log(handleNavigateToHighlights)
-  // const [open, setOpen] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -53,7 +51,6 @@ function NavBar({ handleNavigateToHighlights }) {
   const handleOpenSignUp = () => {
     setOpenSignUp(true);
   };
-  
 
   const handleCloseSignIn = () => {
     setOpenSignIn(false);
@@ -61,24 +58,6 @@ function NavBar({ handleNavigateToHighlights }) {
   const handleOpenSignIn = () => {
     setOpenSignIn(true);
   };
-
-  // const toggleDrawer = (newOpen) => () => {
-  //   setOpen(newOpen);
-  // };
-
-  // const scrollToSection = (sectionId) => {
-  //   const sectionElement = document.getElementById(sectionId);
-  //   const offset = 128;
-  //   if (sectionElement) {
-  //     const targetScroll = sectionElement.offsetTop - offset;
-  //     sectionElement.scrollIntoView({ behavior: "smooth" });
-  //     window.scrollTo({
-  //       top: targetScroll,
-  //       behavior: "smooth",
-  //     });
-  //     setOpen(false);
-  //   }
-  // };
 
   return (
     <div>
@@ -132,6 +111,14 @@ function NavBar({ handleNavigateToHighlights }) {
               />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <MenuItem
+                  onClick={() => navigate("/")}
+                  sx={{ py: "6px", px: "12px" }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Home
+                  </Typography>
+                </MenuItem>
+                <MenuItem
                   onClick={() => onRentASpaceClick()}
                   sx={{ py: "6px", px: "12px" }}
                 >
@@ -147,26 +134,9 @@ function NavBar({ handleNavigateToHighlights }) {
                     List your space
                   </Typography>
                 </MenuItem>
-                <MenuItem
-                  onClick={handleNavigateToHighlights}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => () => navigate("/") //then scrollToSection("faq")
-                }
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
-                  </Typography>
-                </MenuItem>
                 {isLoggedIn && (
                   <MenuItem
-                  onClick={() => onYourSpacesClick()}
+                    onClick={() => onYourSpacesClick()}
                     sx={{ py: "6px", px: "12px" }}
                   >
                     <Typography variant="body2" color="text.primary">
@@ -224,6 +194,7 @@ function NavBar({ handleNavigateToHighlights }) {
                   size="small"
                   onClick={() => {
                     dispatch({ type: "LOGOUT" });
+                    navigate("/");
                   }}
                 >
                   Log Out

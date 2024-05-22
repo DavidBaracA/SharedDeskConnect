@@ -136,7 +136,7 @@ export const ListYourSpacePage = () => {
       errors.maxCapacity = "Max capacity must be greater than 0";
     if (formData.availableCapacity < 0)
       errors.availableCapacity = "Available capacity cannot be negative";
-    if (formData.availableCapacity > formData.maxCapacity)
+    if (Number(formData.availableCapacity) > Number(formData.maxCapacity))
       errors.availableCapacity =
         "Available capacity cannot greater then maximum capacity";
     if (!formData.address) errors.address = "Address is required";
