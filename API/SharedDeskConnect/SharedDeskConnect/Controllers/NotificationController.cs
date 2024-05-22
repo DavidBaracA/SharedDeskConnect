@@ -79,10 +79,21 @@ namespace SharedDeskConnect.Controllers
                     .Select(n => n.Email)
                     .ToList();
 
+                var spaceName = space.Name;
+                var spaceContactNumber = space.ContactNumber;
+
+                var spaceUrl = $"http://localhost:3000/space-details/:{request.SpaceId}"; 
+
                 foreach (var userEmail in usersToNotify)
                 {
-                    await _emailService.SendEmailAsync(userEmail, "Hello from SharedDeskConect!",
-                        "A spot has opened up in the space you wanted. Book it now!");
+                    var emailContent = $@"
+                <p>Hello from SharedDeskConnect!</p>
+                <p>A spot has opened up in the space you wanted: <strong>{spaceName}</strong>.</p>
+                <p>Book it now by clicking here: <a href='{spaceUrl}'>go to space page</a>!</p>
+                <p>Or you can call the owner directly at this number: <strong>{spaceContactNumber}</strong></p>
+";
+                    await _emailService.SendEmailAsync(userEmail, "Spot Available in Your Desired Space!",
+                        emailContent);
                 }
             }
 

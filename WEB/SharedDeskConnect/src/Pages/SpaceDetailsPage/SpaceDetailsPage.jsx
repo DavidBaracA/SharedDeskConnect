@@ -374,18 +374,23 @@ export const SpaceDetailsPage = () => {
                 <Divider />
 
                 <p className="switch-container">
-                  <LocationCityIcon sx={{marginRight: '10px'}} />
+                  <LocationCityIcon sx={{ marginRight: "10px" }} />
                   City: {spaceDetails.city}
                 </p>
                 <Divider />
 
                 <p className="switch-container">
-                  <PlaceIcon sx={{marginRight: '5px'}} />
+                  <PlaceIcon sx={{ marginRight: "5px" }} />
                   Address: {spaceDetails.address}
                 </p>
                 <Divider />
+                <div className="switch-container">
+                <span>Price: {spaceDetails.price + "\u20AC / "}month</span>
 
-                <p>Price: {spaceDetails.price + "\u20AC"}</p>
+                <Tooltip title="You can get a discount depending of how many desks you want to rent. It depends on the owner.">
+                  <InfoIcon sx={{ marginLeft: "10px" }} />
+                </Tooltip>
+                </div>
                 <Divider />
 
                 <p>Maximum Capacity: {spaceDetails.maxCapacity}</p>
