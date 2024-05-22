@@ -20,6 +20,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NavBar from "../../Components/NavBar";
 import { useSelector } from "react-redux";
 import PhoneIcon from "@mui/icons-material/Phone";
+import InfoIcon from "@mui/icons-material/Info";
+import BenefitsList from "../../Components/BenefitsList";
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
 
@@ -39,11 +41,14 @@ export const SpaceDetailsPage = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location]);
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location]
+  );
 
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail); // Assuming you have user email in the state
-console.log("email",currentUserEmail)
+  console.log("email", currentUserEmail);
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
     setEditMode(isEdit === "true");
@@ -123,13 +128,20 @@ console.log("email",currentUserEmail)
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to update space availability and send notifications");
+        throw new Error(
+          "Failed to update space availability and send notifications"
+        );
       }
       setSnackbarMessage("Available capacity updated successfully");
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error updating space availability and sending notifications:", error.message);
-      setSnackbarMessage("Failed to update available capacity and send notifications");
+      console.error(
+        "Error updating space availability and sending notifications:",
+        error.message
+      );
+      setSnackbarMessage(
+        "Failed to update available capacity and send notifications"
+      );
       setSnackbarOpen(true);
     }
   };
@@ -138,7 +150,9 @@ console.log("email",currentUserEmail)
     const fetchNotificationPreference = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5100/api/Notification/Notify?spaceId=${Number(cleanedId)}&userId=${currentUserId}`
+          `http://localhost:5100/api/Notification/Notify?spaceId=${Number(
+            cleanedId
+          )}&userId=${currentUserId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch notification preference");
@@ -174,7 +188,9 @@ console.log("email",currentUserEmail)
         throw new Error("Failed to set notification preference");
       }
       setNotifyOnChange(checked);
-      setSnackbarMessage(checked ? "Notification enabled" : "Notification disabled");
+      setSnackbarMessage(
+        checked ? "Notification enabled" : "Notification disabled"
+      );
       setSnackbarOpen(true);
     } catch (error) {
       console.error("Error setting notification preference:", error.message);
@@ -218,7 +234,7 @@ console.log("email",currentUserEmail)
           </Button>
         </div>
         <div className="container">
-          <div className="gallery-styling">
+          <div className="left-side-styling">
             <ImageGallery
               showPlayButton={false}
               showBullets
@@ -226,12 +242,14 @@ console.log("email",currentUserEmail)
               showNav
               items={imageList}
             />
+            <div className="description-box">
+              <p>Description: {spaceDetails.description}</p>
+            <BenefitsList items={spaceDetails.benefits.split(",")} />
+
+            </div>
           </div>
           <div className="space-details">
             <h2 style={{ margin: 0 }}>{spaceDetails.name}</h2>
-            <div className="description-box">
-              <p>Description: {spaceDetails.description}</p>
-            </div>
             <p>City: {spaceDetails.city}</p>
             <p>Address: {spaceDetails.address}</p>
             <p>Price: {spaceDetails.price + "\u20AC"}</p>
@@ -247,13 +265,19 @@ console.log("email",currentUserEmail)
               />
             ) : (
               <div>
-                <Tooltip title="Keep me updated if a space is available">
-                  <Switch
-                    checked={notifyOnChange}
-                    onChange={(e) => handleNotifyChange(e.target.checked)}
-                  />
-                </Tooltip>
                 <p>Available Capacity: {spaceDetails.availableCapacity}</p>
+                {spaceDetails.availableCapacity !== undefined &&
+                  spaceDetails.availableCapacity === 0 && (
+                    <div className="switch-container">
+                      <Tooltip title="Send me a notification mail when this is available">
+                        <InfoIcon />
+                      </Tooltip>
+                      <Switch
+                        checked={notifyOnChange}
+                        onChange={(e) => handleNotifyChange(e.target.checked)}
+                      />
+                    </div>
+                  )}
               </div>
             )}
             <Accordion expanded={contactExpanded} onChange={handleContactClick}>
@@ -292,7 +316,10 @@ console.log("email",currentUserEmail)
           <Alert
             onClose={handleSnackbarClose}
             severity={
-              snackbarMessage.includes("successfully") ? "success" : "error"
+              snackbarMessage.includes("successfully") ||
+              snackbarMessage.includes("enabled")
+                ? "success"
+                : "error"
             }
             sx={{ width: "100%" }}
           >

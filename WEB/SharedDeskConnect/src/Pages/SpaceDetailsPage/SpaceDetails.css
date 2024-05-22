@@ -1,15 +1,14 @@
 .container {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: flex-start;
-  margin-top: 120px; 
-  margin-bottom: 50px; 
-
+  margin-top: 120px;
+  margin-bottom: 50px;
 }
 
-.gallery-styling {
-  margin: auto; 
-  width: 50%; 
+.left-side-styling {
+  margin: auto;
+  width: 50%;
   z-index: 1;
 }
 
@@ -18,7 +17,7 @@
   display: grid;
   gap: 15px;
   margin-left: 20px;
-
+  margin-top: 50px;
 }
 .button-container {
   position: fixed;
@@ -28,7 +27,13 @@
 }
 
 .description-box {
-  border: 2px solid #ccc; 
-  padding: 20px; 
+  margin-top: 15px;
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  padding: 20px;
   overflow: auto;
+}
+.switch-container {
+  display: flex;
+  align-items: center;
 }

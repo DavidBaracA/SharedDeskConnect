@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   IconButton,
+  Pagination,
 } from "@mui/material";
 import { createTheme } from "@mui/material";
 import {
@@ -38,6 +39,10 @@ export const ListedSpacesPage = () => {
   const [filteredSpaces, setFilteredSpaces] = useState([]);
   const [sortBy, setSortBy] = useState(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Number of items per page
+
   const getSpaces = async () => {
     try {
       const response = await fetch("http://localhost:5100/api/Space/GetSpaces");
@@ -62,6 +67,7 @@ export const ListedSpacesPage = () => {
       space.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredSpaces(filtered);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleSortBy = (property) => {
@@ -98,6 +104,20 @@ export const ListedSpacesPage = () => {
     }
     setSortBy(property);
     setFilteredSpaces(sorted);
+    setCurrentPage(1); // Reset to first page on sort
+  };
+
+  // Calculate paginated data
+  const paginatedSpaces = filteredSpaces.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredSpaces.length / itemsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
 
   return (
@@ -179,9 +199,17 @@ export const ListedSpacesPage = () => {
             flexWrap: "wrap",
           }}
         >
-          {filteredSpaces.map((space) => (
+          {paginatedSpaces.map((space) => (
             <SpaceCard key={space.spaceID} space={space} editMode={false} />
           ))}
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
         </Box>
       </div>
     </ThemeProvider>
