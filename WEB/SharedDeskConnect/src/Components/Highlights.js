@@ -29,7 +29,7 @@ const items = [
     icon: <EmailIcon />,
     title: "Mail Notification",
     description:
-      "You can choose to be notified if there are updeates regarding a space youre a interested in.",
+      "You can choose to be notified if there are updeates regarding a space you are interested in.",
   },
   {
     icon: <CalendarMonthIcon />,

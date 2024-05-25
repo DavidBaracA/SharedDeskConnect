@@ -186,7 +186,7 @@ function NavBar({ handleNavigateToHighlights }) {
                   alignItems: "center",
                 }}
               >
-                <span style={{ color: "black" }}>{currentUser}</span>
+                <span style={{ color: "black" }}>User: <b>{currentUser}</b></span>
                 <Avatar src={profile}></Avatar>{" "}
                 <Button
                   color="primary"

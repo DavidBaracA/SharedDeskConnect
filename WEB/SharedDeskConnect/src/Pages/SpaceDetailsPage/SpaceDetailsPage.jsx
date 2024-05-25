@@ -15,6 +15,12 @@ import {
   Switch,
   Tooltip,
   Alert,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Badge,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NavBar from "../../Components/NavBar";
@@ -22,15 +28,19 @@ import { useSelector } from "react-redux";
 import PhoneIcon from "@mui/icons-material/Phone";
 import InfoIcon from "@mui/icons-material/Info";
 import BenefitsList from "../../Components/BenefitsList";
-import Divider from "@mui/material/Divider";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PlaceIcon from "@mui/icons-material/Place";
+import RentalModal from "../../Components/RentalModal";
+import PriceConfirmationModal from "../../Components/PriceConfirmationModal";
+import RentalList from "../../Components/RentalList";
 
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
 
 export const SpaceDetailsPage = () => {
   const darkBlueBase = "#041f60";
+  const red = "#f95959; ";
+
   const purple = "#5b5299";
   const lightPurple = "#a6b6f8";
   const { id } = useParams();
@@ -42,6 +52,13 @@ export const SpaceDetailsPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [notifyOnChange, setNotifyOnChange] = useState(false);
+  const [rentals, setRentals] = useState([]);
+  const [rentalDialogOpen, setRentalDialogOpen] = useState(false);
+  const [priceConfirmationDialogOpen, setPriceConfirmationDialogOpen] =
+    useState(false);
+  const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false); // New state for rental list modal
+  const [newRental, setNewRental] = useState(null);
+  const [calculatedPrice, setCalculatedPrice] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +69,7 @@ export const SpaceDetailsPage = () => {
 
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail);
-  console.log("email", currentUserEmail);
+
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
     setEditMode(isEdit === "true");
@@ -101,6 +118,25 @@ export const SpaceDetailsPage = () => {
     getImages(cleanedId);
   }, [cleanedId]);
 
+  const fetchRentals = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/Rental/GetRentals`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch rentals");
+      }
+      const data = await response.json();
+      setRentals(data);
+    } catch (error) {
+      console.error("Error fetching rentals:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchRentals();
+  }, []);
+
   const handleBackButton = useCallback(() => {
     navigate(editMode ? "/your-spaces" : "/listed-spaces");
   }, [editMode, navigate]);
@@ -129,12 +165,14 @@ export const SpaceDetailsPage = () => {
       price: event.target.value,
     }));
   };
+
   const handleAddressChange = (event) => {
     setSpaceDetails((prevSpaceDetails) => ({
       ...prevSpaceDetails,
       address: event.target.value,
     }));
   };
+
   const handleCityChange = (event) => {
     setSpaceDetails((prevSpaceDetails) => ({
       ...prevSpaceDetails,
@@ -271,6 +309,121 @@ export const SpaceDetailsPage = () => {
     setSnackbarOpen(false);
   };
 
+  const handleOpenRentalDialog = () => {
+    setRentalDialogOpen(true);
+  };
+
+  const handleCloseRentalDialog = () => {
+    setRentalDialogOpen(false);
+  };
+
+  const handleOpenRentalListDialog = () => {
+    setRentalListDialogOpen(true);
+  };
+
+  const handleCloseRentalListDialog = () => {
+    setRentalListDialogOpen(false);
+  };
+
+  const handleNewRentalSubmit = (rental, price) => {
+    setNewRental(rental);
+    setCalculatedPrice(price);
+    setRentalDialogOpen(false);
+    setPriceConfirmationDialogOpen(true);
+  };
+
+  const handleConfirmRental = async () => {
+    try {
+      const response = await fetch(`http://localhost:5100/api/Rental`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...newRental, CustomPrice: calculatedPrice }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add rental");
+      }
+      fetchRentals(); // Refresh the rental list after adding a new rental
+      setSnackbarMessage("Rental added successfully");
+      setSnackbarOpen(true);
+      setPriceConfirmationDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding rental:", error.message);
+      setSnackbarMessage("Failed to add rental");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleApproveRental = async (rentalId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/Rental/ApproveRental/${rentalId}`,
+        {
+          method: "PUT",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to approve rental");
+      }
+      fetchRentals(); // Refresh the rental list after approval
+      setSnackbarMessage(
+        "Rental approved successfully and email sent to the user."
+      );
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error approving rental:", error.message);
+      setSnackbarMessage("Failed to approve rental");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleRejectRental = async (rentalId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/Rental/RejectRental/${rentalId}`,
+        {
+          method: "PUT",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to reject rental");
+      }
+      fetchRentals(); // Refresh the rental list after rejection
+      setSnackbarMessage("Rental rejected successfully");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error rejecting rental:", error.message);
+      setSnackbarMessage("Failed to reject rental");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleDeleteRental = async (rentalId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/Rental/${rentalId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to delete rental");
+      }
+      fetchRentals(); // Refresh the rental list after deletion
+      setSnackbarMessage("Rental deleted successfully");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error deleting rental:", error.message);
+      setSnackbarMessage("Failed to delete rental");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const pendingRentalsCount = rentals.filter(
+    (rental) => rental.rentalApproval === "pending"
+  ).length;
+
   if (!spaceDetails) {
     return <div>Loading...</div>;
   }
@@ -286,6 +439,9 @@ export const SpaceDetailsPage = () => {
             secondary: {
               main: purple,
               light: lightPurple,
+            },
+            redBadge: {
+              main: red,
             },
           },
         })}
@@ -385,11 +541,11 @@ export const SpaceDetailsPage = () => {
                 </p>
                 <Divider />
                 <div className="switch-container">
-                <span>Price: {spaceDetails.price + "\u20AC / "}month</span>
+                  <span>Price: {spaceDetails.price + "\u20AC / "}month</span>
 
-                <Tooltip title="You can get a discount depending of how many desks you want to rent. It depends on the owner.">
-                  <InfoIcon sx={{ marginLeft: "10px" }} />
-                </Tooltip>
+                  <Tooltip title="This is the price for a full month, if you want to rent for a less period of time click on Custom Period Rental.">
+                    <InfoIcon sx={{ marginLeft: "10px" }} />
+                  </Tooltip>
                 </div>
                 <Divider />
 
@@ -430,7 +586,7 @@ export const SpaceDetailsPage = () => {
                 aria-controls="contact-details-content"
                 id="contact-details-header"
               >
-                <Typography>Contact Number</Typography>
+                <Typography>Contact Owner</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 {editMode ? (
@@ -465,6 +621,71 @@ export const SpaceDetailsPage = () => {
                 Save Changes
               </Button>
             )}
+            {!editMode && (
+              <Button
+                onClick={handleOpenRentalDialog}
+                color="secondary"
+                variant="contained"
+                style={{ marginTop: "10px" }}
+                disabled={
+                  !currentUserId || spaceDetails.availableCapacity === 0
+                }
+              >
+                Custom Period Rental
+              </Button>
+            )}
+            {editMode && (
+              <div>
+                <Tooltip title={`Pending approvals: ${pendingRentalsCount}`}>
+                  <Badge
+                    badgeContent={pendingRentalsCount}
+                    color="info"
+                    style={{ marginLeft: "10px" }}
+                  ></Badge>
+                </Tooltip>
+                <Button
+                  onClick={handleOpenRentalListDialog}
+                  color="secondary"
+                  variant="contained"
+                  style={{ marginTop: "10px" }}
+                >
+                  View Space Rentals
+                </Button>
+              </div>
+            )}
+            <RentalModal
+              open={rentalDialogOpen}
+              onClose={handleCloseRentalDialog}
+              onSubmit={handleNewRentalSubmit}
+              space={spaceDetails}
+            />
+            <PriceConfirmationModal
+              open={priceConfirmationDialogOpen}
+              onClose={() => setPriceConfirmationDialogOpen(false)}
+              onConfirm={handleConfirmRental}
+              price={calculatedPrice}
+            />
+            <Dialog
+              open={rentalListDialogOpen}
+              onClose={handleCloseRentalListDialog}
+              maxWidth="md"
+              fullWidth
+            >
+              <DialogTitle>Space Rentals</DialogTitle>
+              <DialogContent>
+                <RentalList
+                  rentals={rentals}
+                  onApprove={handleApproveRental}
+                  onReject={handleRejectRental}
+                  onDelete={handleDeleteRental}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseRentalListDialog} color="primary">
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </div>
         <Snackbar
@@ -489,3 +710,5 @@ export const SpaceDetailsPage = () => {
     </>
   );
 };
+
+export default SpaceDetailsPage;

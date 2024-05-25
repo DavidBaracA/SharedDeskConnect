@@ -14,6 +14,15 @@ namespace SharedDeskConnect.Models
         public DateTime RentalStartPeriod { get; set; }
         [Required]
         public DateTime RentalEndPeriod { get; set; }
-        public string ImageUrls { get; set; }
+        [Required]
+        public string ContactNumber { get; set; }
+        [Required]
+        public string RentalApproval { get; set; }
+        [Required]
+        public int NumberOfPersons { get; set; }
+        public decimal CustomPrice { get; set; }
+
+
     }
+
 }
