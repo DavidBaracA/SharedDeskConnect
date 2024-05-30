@@ -9,11 +9,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState, useEffect } from "react";
 import { isUserAuthenticated } from "./helper";
 import { useDispatch } from "react-redux";
+import FormHelperText from "@mui/material/FormHelperText";
+
 
 export const SignInModal = (props) => {
   const dispatch = useDispatch();
   const handleClose = props.onClose;
   const open = props.open;
+  const openSignUp = props.onSignUp;
   const [users, setUsers] = useState([]);
   const [formValues, setFormValues] = useState({
     username: "",
@@ -61,15 +64,18 @@ export const SignInModal = (props) => {
           ) {
             dispatch({
               type: "LOGIN",
-              payload: { username: user.username, currentId: user.userID, email:user.email, type:user.userType },
+              payload: {
+                username: user.username,
+                currentId: user.userID,
+                email: user.email,
+                type: user.userType,
+              },
             });
           }
         });
         handleClose();
-      }
-      else{
-      alert("Invalid Credentials");
-
+      } else {
+        alert("Invalid Credentials");
       }
     } else {
       alert("Some fields are not accepted(change later)!");
@@ -107,6 +113,18 @@ export const SignInModal = (props) => {
             variant="standard"
             onChange={handleChange}
           />
+          <FormHelperText sx={{marginLeft: "15px",}}>
+          New user?
+          <Button
+            onClick={() => {
+              handleClose();
+              openSignUp();
+            }}
+            sx={{fontSize: 10}}
+          >
+            Sign up
+          </Button>
+        </FormHelperText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

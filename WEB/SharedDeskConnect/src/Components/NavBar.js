@@ -182,7 +182,7 @@ function NavBar({ handleNavigateToHighlights }) {
                 >
                   Sign in
                 </Button>
-                <SignInModal open={openSignIn} onClose={handleCloseSignIn} />
+                <SignInModal open={openSignIn} onClose={handleCloseSignIn} onSignUp={handleOpenSignUp} />
                 <Button
                   color="primary"
                   variant="contained"

@@ -1,8 +1,8 @@
 export const isStrongPassword = (password) => {
-  // Verifică dacă parola este suficient de puternică
-  // Puteți implementa propriile criterii de validare aici
-  // Exemplu simplu: Parola trebuie să aibă cel puțin 8 caractere
-  return password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasDigit = /\d/.test(password);
+  const isLongEnough = password.length >= 8;
+  return hasUpperCase && hasDigit && isLongEnough;
 };
 
 export const doesUserExist = (users, username) => {
