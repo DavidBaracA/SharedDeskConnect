@@ -33,6 +33,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import RentalModal from "../../Components/RentalModal";
 import PriceConfirmationModal from "../../Components/PriceConfirmationModal";
 import RentalList from "../../Components/RentalList";
+import DeskIcon from '@mui/icons-material/Desk';
 
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -47,6 +48,7 @@ export const SpaceDetailsPage = () => {
   const cleanedId = id.substring(1);
   const [imageList, setImageList] = useState([]);
   const [spaceDetails, setSpaceDetails] = useState(null);
+  console.log("🚀 ~ SpaceDetailsPage ~ spaceDetails:", spaceDetails)
   const [contactExpanded, setContactExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -69,6 +71,8 @@ export const SpaceDetailsPage = () => {
 
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail);
+  const currentUserType = useSelector((state) => state.currentUserType);
+
 
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
@@ -276,8 +280,8 @@ export const SpaceDetailsPage = () => {
   const handleNotifyChange = async (checked) => {
     try {
       const notificationData = {
-        SpaceId: String(cleanedId),
-        UserId: String(currentUserId),
+        SpaceId: cleanedId,
+        UserId: currentUserId,
         Email: currentUserEmail,
       };
       const notifyResponse = await fetch(
@@ -549,7 +553,7 @@ export const SpaceDetailsPage = () => {
                 </div>
                 <Divider />
 
-                <p>Maximum Capacity: {spaceDetails.maxCapacity}</p>
+                <p>Maximum Desks Capacity: {spaceDetails.maxCapacity}</p>
                 <Divider />
               </>
             )}
@@ -565,7 +569,10 @@ export const SpaceDetailsPage = () => {
               />
             ) : (
               <div>
-                <p>Available Capacity: {spaceDetails.availableCapacity}</p>
+                <p className="switch-container">
+                  <DeskIcon sx={{ marginRight: "10px" }} />
+                  Available Desks: {spaceDetails.availableCapacity}
+                </p>
                 {spaceDetails.availableCapacity !== undefined &&
                   spaceDetails.availableCapacity === 0 && (
                     <div className="switch-container">
@@ -621,20 +628,20 @@ export const SpaceDetailsPage = () => {
                 Save Changes
               </Button>
             )}
-            {!editMode && (
+            {!editMode &&  (
               <Button
                 onClick={handleOpenRentalDialog}
                 color="secondary"
                 variant="contained"
                 style={{ marginTop: "10px" }}
                 disabled={
-                  !currentUserId || spaceDetails.availableCapacity === 0
+                  !currentUserId || currentUserId === spaceDetails.renterUserId || spaceDetails.availableCapacity === 0
                 }
               >
                 Custom Period Rental
               </Button>
             )}
-            {editMode && (
+            {!editMode && (
               <div>
                 <Tooltip title={`Pending approvals: ${pendingRentalsCount}`}>
                   <Badge

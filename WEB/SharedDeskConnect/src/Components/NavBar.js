@@ -29,13 +29,20 @@ function NavBar({ handleNavigateToHighlights }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  console.log("🚀 ~ NavBar ~ isLoggedIn:", isLoggedIn)
   const currentUser = useSelector((state) => state.currentUser);
   const currentUserId = useSelector((state) => state.currentUserID);
+  const currentUserType = useSelector((state) => state.currentUserType);
+  console.log("🚀 ~ NavBar ~ currentUserType:", currentUserType)
+
   const onRentASpaceClick = () => {
     navigate("/listed-spaces");
   };
   const onYourSpacesClick = () => {
     navigate("/your-spaces");
+  };
+  const onYourRentalsClick = () => {
+    navigate("/your-rentals");
   };
   const onListASpaceClick = () => {
     if (currentUserId !== null) navigate("/list-a-space");
@@ -133,8 +140,18 @@ function NavBar({ handleNavigateToHighlights }) {
                   <Typography variant="body2" color="text.primary">
                     List your space
                   </Typography>
-                </MenuItem>
-                {isLoggedIn && (
+                  </MenuItem>
+                {isLoggedIn && (currentUserType === "buyer" || currentUserType === "buyerAndRenter") && (
+                  <MenuItem
+                    onClick={() => onYourRentalsClick()}
+                    sx={{ py: "6px", px: "12px" }}
+                  >
+                    <Typography variant="body2" color="text.primary">
+                      Your Rentals
+                    </Typography>
+                  </MenuItem>
+                )} 
+                {isLoggedIn && (currentUserType === "renter" || currentUserType === "buyerAndRenter") && (
                   <MenuItem
                     onClick={() => onYourSpacesClick()}
                     sx={{ py: "6px", px: "12px" }}

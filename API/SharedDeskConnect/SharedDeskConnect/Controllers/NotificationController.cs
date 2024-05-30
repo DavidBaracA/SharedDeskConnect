@@ -20,7 +20,7 @@ namespace SharedDeskConnect.Controllers
             _emailService = emailService;
         }
         [HttpGet("Notify")]
-        public async Task<IActionResult> GetNotify([FromQuery] int spaceId, [FromQuery] string userId)
+        public async Task<IActionResult> GetNotify([FromQuery] int spaceId, [FromQuery] int userId)
         {
             var existingPreference = _context.NotificationPreferences
                 .FirstOrDefault(n => n.SpaceId == spaceId && n.UserId == userId);
@@ -104,7 +104,7 @@ namespace SharedDeskConnect.Controllers
     public class NotifyRequest
     {
         public int SpaceId { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public string Email { get; set; }
     }
 

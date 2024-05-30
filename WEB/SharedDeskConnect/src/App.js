@@ -5,6 +5,7 @@ import { ListedSpacesPage } from './Pages/ListedSpacesPage/ListedSpacesPage';
 import { ListYourSpacePage } from './Pages/ListYourSpacePage/ListYourSpacePage';
 import { SpaceDetailsPage } from './Pages/SpaceDetailsPage/SpaceDetailsPage';
 import { YourSpaces } from './Pages/YourSpaces/YourSpaces';
+import YourRentalsPage from './Pages/YourRentalsPage/YourRentalsPage';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
       <Route path="/space-details/:id" element={<SpaceDetailsPage />} />
 
       <Route path="/your-spaces" element={<YourSpaces />} />
-      <Route path="/your-rentals" element={<ListedSpacesPage />} />
+      <Route path="/your-rentals" element={<YourRentalsPage />} />
     </Routes>
   </BrowserRouter>
   );

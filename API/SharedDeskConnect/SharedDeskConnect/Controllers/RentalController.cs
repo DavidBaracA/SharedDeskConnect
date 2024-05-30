@@ -81,6 +81,40 @@ namespace SharedDeskConnect.Controllers
 
             return NoContent();
         }
+        [HttpGet("UserRentals/{userId}")]
+        public ActionResult<IEnumerable<RentalDetails>> GetUserRentals(int userId)
+        {
+            var rentals = _context.Rentals
+                .Where(r => r.UserPayerID == userId && r.RentalApproval == "approved")
+                .Join(_context.Spaces,
+                    rental => rental.SpaceID,
+                    space => space.SpaceID,
+                    (rental, space) => new
+                    {
+                        Rental = rental,
+                        Space = space,
+                        Owner = _context.Users.FirstOrDefault(u => u.UserID == space.RenterUserId)
+                    })
+                .Select(rs => new RentalDetails
+                {
+                    RentalID = rs.Rental.RentalID,
+                    RentalStartPeriod = rs.Rental.RentalStartPeriod,
+                    RentalEndPeriod = rs.Rental.RentalEndPeriod,
+                    CustomPrice = rs.Rental.CustomPrice,
+                    NumberOfPersons = rs.Rental.NumberOfPersons,
+                    ContactNumber = rs.Space.ContactNumber,
+                    SpaceID = rs.Space.SpaceID,
+                    SpaceName = rs.Space.Name,
+                    Username = rs.Owner.Username != null ? rs.Owner.Username : "N/A",
+                })
+                .ToList();
+
+            if (rentals == null)
+            {
+                return NotFound();
+            }
+            return rentals;
+        }
 
         [HttpPut("ApproveRental/{id}")]
         public async Task<IActionResult> ApproveRental(int id)
@@ -148,5 +182,17 @@ namespace SharedDeskConnect.Controllers
 
             return NoContent();
         }
+    }
+    public class RentalDetails
+    {
+        public int RentalID { get; set; }
+        public DateTime RentalStartPeriod { get; set; }
+        public DateTime RentalEndPeriod { get; set; }
+        public decimal CustomPrice { get; set; }
+        public int NumberOfPersons { get; set; }
+        public string ContactNumber { get; set; }
+        public int SpaceID { get; set; }
+        public string SpaceName { get; set; }
+        public string Username { get; set; }
     }
 }

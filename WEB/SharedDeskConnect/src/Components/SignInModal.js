@@ -61,7 +61,7 @@ export const SignInModal = (props) => {
           ) {
             dispatch({
               type: "LOGIN",
-              payload: { username: user.username, currentId: user.userID, email:user.email },
+              payload: { username: user.username, currentId: user.userID, email:user.email, type:user.userType },
             });
           }
         });

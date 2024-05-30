@@ -17,8 +17,8 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
   const [newRental, setNewRental] = useState({
     userPayerID: currentUserId,
     spaceID: space.spaceID,
-    rentalStartPeriod: new Date(),
-    rentalEndPeriod: new Date(),
+    rentalStartPeriod: null,
+    rentalEndPeriod: null,
     contactNumber: "",
     numberOfPersons: 1,
     rentalApproval: "pending",
@@ -30,38 +30,42 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
 
   const updateExcludedDates = useCallback(
     (rentals, personsNumber) => {
-      console.log("🚀 ~ RentalModal ~ personsNumber:", personsNumber)
       const dates = [];
       const capacity = space.availableCapacity;
+
+      // Create a map to keep track of the total persons for each date
+      const dateCapacityMap = new Map();
 
       rentals.forEach((rental) => {
         const start = new Date(rental.rentalStartPeriod);
         const end = new Date(rental.rentalEndPeriod);
 
-        let currentCapacity = capacity;
-
         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
           const rentalDate = new Date(d);
-          const rentalsOnDate = rentals.filter((r) => {
-            const rStart = new Date(r.rentalStartPeriod);
-            const rEnd = new Date(r.rentalEndPeriod);
-            return rentalDate >= rStart && rentalDate <= rEnd;
-          });
-
-          const totalPersons = rentalsOnDate.reduce(
-            (sum, r) => sum + r.numberOfPersons,
-            0
-          );
-          currentCapacity = capacity - totalPersons;
-          console.log("🚀 ~ rentals.forEach ~ currentCapacity:", currentCapacity)
-
-          if (currentCapacity < personsNumber) {
-            dates.push(new Date(rentalDate));
-          }
+          const currentTotal = dateCapacityMap.get(rentalDate.toDateString()) || 0;
+          dateCapacityMap.set(rentalDate.toDateString(), currentTotal + rental.numberOfPersons);
         }
       });
 
+      for (let [date, totalPersons] of dateCapacityMap.entries()) {
+        if (totalPersons + personsNumber > capacity) {
+          dates.push(new Date(date));
+        }
+      }
+
       setExcludeDates(dates);
+
+      // Find the first available date
+      let firstAvailableDate = new Date();
+      while (dates.some((d) => d.getTime() === firstAvailableDate.getTime())) {
+        firstAvailableDate.setDate(firstAvailableDate.getDate() + 1);
+      }
+
+      setNewRental((prevRental) => ({
+        ...prevRental,
+        rentalStartPeriod: firstAvailableDate,
+        rentalEndPeriod: firstAvailableDate,
+      }));
     },
     [space]
   );
@@ -117,6 +121,32 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
     if (newRental.rentalStartPeriod > newRental.rentalEndPeriod)
       errors.rentalPeriod = "End Date must be after Start Date";
 
+    // Additional validation to ensure the selected period does not exceed available capacity
+    const start = new Date(newRental.rentalStartPeriod);
+    const end = new Date(newRental.rentalEndPeriod);
+    const dateCapacityMap = new Map();
+
+    existingRentals.forEach((rental) => {
+      const rentalStart = new Date(rental.rentalStartPeriod);
+      const rentalEnd = new Date(rental.rentalEndPeriod);
+
+      for (let d = new Date(rentalStart); d <= rentalEnd; d.setDate(d.getDate() + 1)) {
+        const rentalDate = new Date(d);
+        const currentTotal = dateCapacityMap.get(rentalDate.toDateString()) || 0;
+        dateCapacityMap.set(rentalDate.toDateString(), currentTotal + rental.numberOfPersons);
+      }
+    });
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const rentalDate = new Date(d);
+      const totalPersonsOnDate = dateCapacityMap.get(rentalDate.toDateString()) || 0;
+
+      if (totalPersonsOnDate + newRental.numberOfPersons > space.availableCapacity) {
+        errors.rentalPeriod = "Selected period exceeds available capacity on certain dates";
+        break;
+      }
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -159,9 +189,9 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             onChange={(e) =>
               handleNewRentalChange(e.target.name, e.target.value)
             }
-            style={{ marginBottom: "10px", marginTop: "20px" }}
-            error={!!formErrors.ContactNumber}
-            helperText={formErrors.ContactNumber}
+            style={{ marginBottom: "10px", marginTop: "50px" }}
+            error={!!formErrors.contactNumber}
+            helperText={formErrors.contactNumber}
           />
           <TextField
             id="numberOfPersons"
@@ -195,13 +225,11 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             excludeDates={excludeDates}
             wrapperClassName="date-picker-wrapper"
             popperProps={{
-              style: { zIndex: 1300 }, // Ensure the popper is above other elements
+              style: { zIndex: 1300 },
             }}
             style={{ marginBottom: "10px" }}
             minDate={new Date()}
-            maxDate={
-              new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-            }
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)} // Allow up to 12 months in advance
           />
           <DatePicker
             selected={newRental.rentalEndPeriod}
@@ -222,9 +250,7 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             }}
             style={{ marginBottom: "10px" }}
             minDate={newRental.rentalStartPeriod}
-            maxDate={
-              new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-            }
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)} // Allow up to 12 months in advance
             error={!!formErrors.rentalPeriod}
             helperText={formErrors.rentalPeriod}
           />

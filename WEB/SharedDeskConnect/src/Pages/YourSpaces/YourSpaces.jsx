@@ -6,6 +6,7 @@ import NavBar from "../../Components/NavBar";
 import * as React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import {Typography} from "@mui/material";
 
 import "./YourSpaces.css";
 import { SpaceCard } from "../../Components/SpaceCard";
@@ -83,7 +84,9 @@ export const YourSpaces = () => {
       <CssBaseline />
       <NavBar />
       <div className="your-spaces-page">
-        <h2>Your Spaces</h2>
+      <Typography variant="h4" sx={{marginBottom: "15px"}}>
+          Your Spaces
+        </Typography>
         {currentUserSpaces.length > 0 ? (
           <Box
             sx={{

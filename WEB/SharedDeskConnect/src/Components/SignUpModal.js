@@ -73,8 +73,10 @@ export const SignUpModal = (props) => {
         const responseData = await response.json();
         const userID = responseData.userID
         const userEmail = responseData.email
+        const userType = responseData.userType
 
-        dispatch({type:"LOGIN",payload:{username:username,currentId:userID,email:userEmail}})
+
+        dispatch({type:"LOGIN",payload:{username:username,currentId:userID,email:userEmail,type:userType}})
       }
     } catch (error) {
       console.error("Error adding user:", error.message);

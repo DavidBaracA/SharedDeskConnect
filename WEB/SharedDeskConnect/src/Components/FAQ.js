@@ -59,11 +59,10 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: "100%", md: "70%" } }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore
+              To rent a space, it is necessary to first log into your account.
+              If you do not have an account, you can create one by clicking the
+              'Sign Up' button. Once registered, you may browse through the
+              listed spaces by accessing the "Find a desk" tab and submit a rental application.{" "}
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -86,11 +85,8 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: "100%", md: "70%" } }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore
+              Any issues regarding rental cancellations are solely determined by
+              the space owner. Please contact the owner directly for assistance.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -113,11 +109,7 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: "100%", md: "70%" } }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore
+              Simplicity, efficiency, dedication
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -131,7 +123,7 @@ export default function FAQ() {
             id="panel4d-header"
           >
             <Typography component="h3" variant="subtitle2">
-              How can i list a space to be rented?
+              How can i list a space?
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -140,15 +132,14 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: "100%", md: "70%" } }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolorearranty, please
-              contact our customer support for assistance.
+              To list a space, click on the "List Your Space" tab. You will then
+              be redirected to a page that guides you through the process of
+              listing your space.
             </Typography>
           </AccordionDetails>
         </Accordion>
+
+
       </Box>
     </Container>
   );
