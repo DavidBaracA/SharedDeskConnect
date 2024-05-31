@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { isUserAuthenticated } from "./helper";
 import { useDispatch } from "react-redux";
 import FormHelperText from "@mui/material/FormHelperText";
-
+import Snackbar from "@mui/material/Snackbar";
 
 export const SignInModal = (props) => {
   const dispatch = useDispatch();
@@ -22,72 +22,82 @@ export const SignInModal = (props) => {
     username: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const handleChange = (event) => {
     setFormValues({
       ...formValues,
       [event.target.name]: event.target.value,
     });
+    setErrors({ ...errors, [event.target.name]: "" });
   };
 
   const getUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5100/api/User/GetUsers")
-        .then((response) => response.json())
-        .then((data) => {
-          setUsers(data);
-        });
-
-      if (!response) {
-        throw new Error(`HTTP error! Status: ${response}`);
+      const response = await fetch("http://localhost:5100/api/User/GetUsers");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      const data = await response.json();
+      setUsers(data);
     } catch (error) {
-      console.error("Error adding reservation:", error.message);
+      console.error("Error fetching users:", error.message);
     }
   };
+
   useEffect(() => {
     getUsers();
   }, []);
 
+  const validateFields = () => {
+    let newErrors = {};
+    if (!formValues.username) {
+      newErrors.username = "Username is required";
+    }
+    if (!formValues.password) {
+      newErrors.password = "Password is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // TO DOO
-    // ADD VALIDATION ON SIGN IN
-
-    if (formValues.username && formValues.password) {
-      if (
-        isUserAuthenticated(users, formValues.username, formValues.password)
-      ) {
-        users.forEach((user) => {
-          if (
-            user.username === formValues.username &&
-            user.password === formValues.password
-          ) {
-            dispatch({
-              type: "LOGIN",
-              payload: {
-                username: user.username,
-                currentId: user.userID,
-                email: user.email,
-                type: user.userType,
-              },
-            });
-          }
+    if (!validateFields()) {
+      return; // stop here if fields are invalid
+    }
+    if (isUserAuthenticated(users, formValues.username, formValues.password)) {
+      const user = users.find((u) => u.username === formValues.username && u.password === formValues.password);
+      if (user) {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            username: user.username,
+            currentId: user.userID,
+            email: user.email,
+            type: user.userType,
+          },
         });
+        setSnackbarOpen(true);
         handleClose();
-      } else {
-        alert("Invalid Credentials");
       }
     } else {
-      alert("Some fields are not accepted(change later)!");
+      setErrors({ auth: "Invalid username or password" });
     }
   };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
     <React.Fragment>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>SIGN IN</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please fill the form below to log in your account.
+            Please fill in the form below to log in to your account.
           </DialogContentText>
           <TextField
             required
@@ -95,11 +105,13 @@ export const SignInModal = (props) => {
             id="username"
             name="username"
             label="Username"
+            type="text"
             value={formValues.username}
-            type="username"
             fullWidth
             variant="standard"
             onChange={handleChange}
+            error={!!errors.username}
+            helperText={errors.username}
           />
           <TextField
             required
@@ -107,36 +119,41 @@ export const SignInModal = (props) => {
             id="password"
             name="password"
             label="Password"
-            value={formValues.password}
             type="password"
+            value={formValues.password}
             fullWidth
             variant="standard"
             onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
           />
-          <FormHelperText sx={{marginLeft: "15px",}}>
-          New user?
-          <Button
-            onClick={() => {
-              handleClose();
-              openSignUp();
-            }}
-            sx={{fontSize: 10}}
-          >
-            Sign up
-          </Button>
-        </FormHelperText>
+          {errors.auth && (
+            <FormHelperText error>{errors.auth}</FormHelperText>
+          )}
+          <FormHelperText sx={{ marginLeft: "15px" }}>
+            New user?
+            <Button
+              onClick={() => {
+                handleClose();
+                openSignUp();
+              }}
+              sx={{ fontSize: 10 }}
+            >
+              Sign up
+            </Button>
+          </FormHelperText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            onClick={(event) => {
-              handleSubmit(event);
-            }}
-          >
-            LOG IN
-          </Button>
+          <Button onClick={handleSubmit}>LOG IN</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Logged in successfully"
+      />
     </React.Fragment>
   );
 };

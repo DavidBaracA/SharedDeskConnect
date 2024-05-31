@@ -133,6 +133,7 @@ function NavBar({ handleNavigateToHighlights }) {
                     Find a Desk
                   </Typography>
                 </MenuItem>
+                {(!isLoggedIn || (currentUserType === "renter" || currentUserType === "buyerAndRenter") )&& (
                 <MenuItem
                   sx={{ py: "6px", px: "12px" }}
                   onClick={() => onListASpaceClick()}
@@ -140,7 +141,8 @@ function NavBar({ handleNavigateToHighlights }) {
                   <Typography variant="body2" color="text.primary">
                     List your space
                   </Typography>
-                  </MenuItem>
+                  </MenuItem> )
+                }
                 {isLoggedIn && (currentUserType === "buyer" || currentUserType === "buyerAndRenter") && (
                   <MenuItem
                     onClick={() => onYourRentalsClick()}

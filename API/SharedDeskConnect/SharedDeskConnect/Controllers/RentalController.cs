@@ -153,7 +153,7 @@ namespace SharedDeskConnect.Controllers
         }
 
         [HttpPut("RejectRental/{id}")]
-        public IActionResult RejectRental(int id)
+        public async Task<IActionResult> RejectRental(int id)
         {
             var rental = _context.Rentals.Find(id);
             if (rental == null)
@@ -161,9 +161,27 @@ namespace SharedDeskConnect.Controllers
                 return NotFound();
             }
 
-            rental.RentalApproval = "rejected";
-            _context.Rentals.Update(rental);
-            _context.SaveChanges();
+            var space = _context.Spaces.Find(rental.SpaceID);
+            if (space == null)
+            {
+                return NotFound("Space not found.");
+            }
+
+            var payer = _context.Users.Find(rental.UserPayerID);
+            if (payer != null)
+            {
+                var emailContent = $@"
+                <p>Dear {payer.Username},</p>
+                <p>We are sorry to inform you that your request to rent the space <strong>{space.Name}</strong> has been rejected and the reservation has been canceled by the owner.</p>
+                <p>This usually happens when the space availability has changed</p>
+                <p>Thank you for using SharedDeskConnect.</p>";
+
+                await _emailService.SendEmailAsync(payer.Email, "Rental Rejected and Canceled", emailContent);
+            }
+
+            // Remove the rental from the database
+            _context.Rentals.Remove(rental);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

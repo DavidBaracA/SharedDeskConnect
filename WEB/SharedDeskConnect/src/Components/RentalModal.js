@@ -13,9 +13,9 @@ import { useSelector } from "react-redux";
 
 const RentalModal = ({ open, onClose, onSubmit, space }) => {
   const currentUserId = useSelector((state) => state.currentUserID);
+  console.log("🚀 ~ RentalModal ~ currentUserId:", currentUserId)
 
   const [newRental, setNewRental] = useState({
-    userPayerID: currentUserId,
     spaceID: space.spaceID,
     rentalStartPeriod: null,
     rentalEndPeriod: null,
@@ -196,7 +196,7 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
           <TextField
             id="numberOfPersons"
             name="numberOfPersons"
-            label="Number of Persons"
+            label="Number of Desks"
             variant="outlined"
             type="number"
             fullWidth

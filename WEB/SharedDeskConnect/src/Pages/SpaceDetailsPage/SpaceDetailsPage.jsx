@@ -33,7 +33,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import RentalModal from "../../Components/RentalModal";
 import PriceConfirmationModal from "../../Components/PriceConfirmationModal";
 import RentalList from "../../Components/RentalList";
-import DeskIcon from '@mui/icons-material/Desk';
+import DeskIcon from "@mui/icons-material/Desk";
 
 import "./SpaceDetails.css";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -48,7 +48,7 @@ export const SpaceDetailsPage = () => {
   const cleanedId = id.substring(1);
   const [imageList, setImageList] = useState([]);
   const [spaceDetails, setSpaceDetails] = useState(null);
-  console.log("🚀 ~ SpaceDetailsPage ~ spaceDetails:", spaceDetails)
+  console.log("🚀 ~ SpaceDetailsPage ~ spaceDetails:", spaceDetails);
   const [contactExpanded, setContactExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -61,6 +61,7 @@ export const SpaceDetailsPage = () => {
   const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false); // New state for rental list modal
   const [newRental, setNewRental] = useState(null);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
+  const [ownerUsername, setOwnerUsername] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +73,6 @@ export const SpaceDetailsPage = () => {
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail);
   const currentUserType = useSelector((state) => state.currentUserType);
-
 
   useEffect(() => {
     const isEdit = searchParams.get("editMode");
@@ -98,6 +98,25 @@ export const SpaceDetailsPage = () => {
     fetchSpaceDetails();
   }, [cleanedId]);
 
+  useEffect(() => {
+    const fetchOwnerUsername = async () => {
+      if (spaceDetails !== null)
+        try {
+          const response = await fetch(
+            `http://localhost:5100/api/User/${spaceDetails.renterUserId}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch space details");
+          }
+          const data = await response.json();
+          setOwnerUsername(data.username);
+        } catch (error) {
+          console.error("Error fetching space details:", error.message);
+        }
+    };
+    fetchOwnerUsername();
+  }, [spaceDetails]);
+
   const getImages = async (cleanedId) => {
     try {
       const response = await fetch(
@@ -122,7 +141,7 @@ export const SpaceDetailsPage = () => {
     getImages(cleanedId);
   }, [cleanedId]);
 
-  const fetchRentals = async () => {
+  const fetchRentals = useCallback(async () => {
     try {
       const response = await fetch(
         `http://localhost:5100/api/Rental/GetRentals`
@@ -131,15 +150,15 @@ export const SpaceDetailsPage = () => {
         throw new Error("Failed to fetch rentals");
       }
       const data = await response.json();
-      setRentals(data);
+      setRentals(data.filter((rental) => rental.spaceID === Number(cleanedId)));
     } catch (error) {
       console.error("Error fetching rentals:", error.message);
     }
-  };
+  }, [cleanedId]);
 
   useEffect(() => {
     fetchRentals();
-  }, []);
+  }, [fetchRentals]);
 
   const handleBackButton = useCallback(() => {
     navigate(editMode ? "/your-spaces" : "/listed-spaces");
@@ -330,7 +349,7 @@ export const SpaceDetailsPage = () => {
   };
 
   const handleNewRentalSubmit = (rental, price) => {
-    setNewRental(rental);
+    setNewRental({ ...rental, userPayerID: currentUserId });
     setCalculatedPrice(price);
     setRentalDialogOpen(false);
     setPriceConfirmationDialogOpen(true);
@@ -348,8 +367,8 @@ export const SpaceDetailsPage = () => {
       if (!response.ok) {
         throw new Error("Failed to add rental");
       }
-      fetchRentals(); // Refresh the rental list after adding a new rental
-      setSnackbarMessage("Rental added successfully");
+      fetchRentals();
+      setSnackbarMessage("Rental submitted successfully");
       setSnackbarOpen(true);
       setPriceConfirmationDialogOpen(false);
     } catch (error) {
@@ -393,7 +412,7 @@ export const SpaceDetailsPage = () => {
       if (!response.ok) {
         throw new Error("Failed to reject rental");
       }
-      fetchRentals(); // Refresh the rental list after rejection
+      fetchRentals();
       setSnackbarMessage("Rental rejected successfully");
       setSnackbarOpen(true);
     } catch (error) {
@@ -608,10 +627,13 @@ export const SpaceDetailsPage = () => {
                   />
                 ) : (
                   <Typography>
-                    <span style={{ paddingRight: 5 }}>
-                      <PhoneIcon fontSize={"10px"} />
-                    </span>
-                    {spaceDetails.contactNumber}
+                    <p>
+                      Username: <strong>{ownerUsername}</strong>
+                    </p>
+                    <div className="switch-container">
+                      <PhoneIcon fontSize={"10px"} marginRight={"5px"} />
+                      {spaceDetails.contactNumber}
+                    </div>
                   </Typography>
                 )}
               </AccordionDetails>
@@ -628,20 +650,22 @@ export const SpaceDetailsPage = () => {
                 Save Changes
               </Button>
             )}
-            {!editMode &&  (
+            {!editMode && currentUserType !== "renter" && (
               <Button
                 onClick={handleOpenRentalDialog}
                 color="secondary"
                 variant="contained"
                 style={{ marginTop: "10px" }}
                 disabled={
-                  !currentUserId || currentUserId === spaceDetails.renterUserId || spaceDetails.availableCapacity === 0
+                  !currentUserId ||
+                  currentUserId === spaceDetails.renterUserId ||
+                  spaceDetails.availableCapacity === 0
                 }
               >
-                Custom Period Rental
+                Apply for a Rental
               </Button>
             )}
-            {!editMode && (
+            {editMode && (
               <div>
                 <Tooltip title={`Pending approvals: ${pendingRentalsCount}`}>
                   <Badge
