@@ -72,14 +72,14 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
     const fetchExistingRentals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5100/api/Rental/GetRentals?spaceId=${space.spaceID}`
+          `http://localhost:5100/api/Rental/GetRentals`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch existing rentals");
         }
         const data = await response.json();
-        setExistingRentals(data);
-        updateExcludedDates(data, newRental.numberOfPersons);
+        setExistingRentals(data.filter((rental) => rental.spaceID === Number(space.spaceID)));
+        updateExcludedDates(data.filter((rental) => rental.spaceID === Number(space.spaceID)), newRental.numberOfPersons);
       } catch (error) {
         console.error("Error fetching existing rentals:", error.message);
       }
@@ -232,7 +232,7 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             }}
             style={{ marginBottom: "10px" }}
             minDate={new Date()}
-            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)} // Allow up to 12 months in advance
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)} 
           />
           <DatePicker
             selected={newRental.rentalEndPeriod}
@@ -249,11 +249,11 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             excludeDates={excludeDates}
             wrapperClassName="date-picker-wrapper"
             popperProps={{
-              style: { zIndex: 1300 }, // Ensure the popper is above other elements
+              style: { zIndex: 1300 }, 
             }}
             style={{ marginBottom: "10px" }}
             minDate={newRental.rentalStartPeriod}
-            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)} // Allow up to 12 months in advance
+            maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 12, 0)}
             error={!!formErrors.rentalPeriod}
             helperText={formErrors.rentalPeriod}
           />

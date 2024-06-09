@@ -44,7 +44,7 @@ export const SpaceDetailsPage = () => {
 
   const purple = "#5b5299";
   const lightPurple = "#a6b6f8";
-  const { id : cleanedId } = useParams();
+  const { id: cleanedId } = useParams();
   const [imageList, setImageList] = useState([]);
   const [spaceDetails, setSpaceDetails] = useState(null);
   const [contactExpanded, setContactExpanded] = useState(false);
@@ -55,7 +55,7 @@ export const SpaceDetailsPage = () => {
   const [rentalDialogOpen, setRentalDialogOpen] = useState(false);
   const [priceConfirmationDialogOpen, setPriceConfirmationDialogOpen] =
     useState(false);
-  const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false); 
+  const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false);
   const [newRental, setNewRental] = useState(null);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [ownerUsername, setOwnerUsername] = useState("");
@@ -67,8 +67,6 @@ export const SpaceDetailsPage = () => {
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail);
   const currentUserType = useSelector((state) => state.currentUserType);
-
-
 
   useEffect(() => {
     const fetchSpaceDetails = async () => {
@@ -340,12 +338,17 @@ export const SpaceDetailsPage = () => {
   };
 
   const handleNewRentalSubmit = (rental, price) => {
+    console.log("🚀 ~ handleNewRentalSubmit ~ rental:", rental);
     setNewRental({ ...rental, userPayerID: currentUserId });
     setCalculatedPrice(price);
     setRentalDialogOpen(false);
     setPriceConfirmationDialogOpen(true);
   };
-
+  const adjustDateForTimezone = (date) => {
+    const localTime = new Date(date);
+    const timeOffsetInMS = localTime.getTimezoneOffset() * 60000;
+    return new Date(localTime.getTime() - timeOffsetInMS);
+};
   const handleConfirmRental = async () => {
     try {
       const response = await fetch(`http://localhost:5100/api/Rental`, {
@@ -353,7 +356,12 @@ export const SpaceDetailsPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...newRental, CustomPrice: calculatedPrice }),
+        body: JSON.stringify({
+          ...newRental,
+          rentalStartPeriod: adjustDateForTimezone(newRental.rentalStartPeriod).toISOString(),
+          rentalEndPeriod: adjustDateForTimezone(newRental.rentalEndPeriod).toISOString(),
+          CustomPrice: calculatedPrice,
+        }),
       });
       if (!response.ok) {
         throw new Error("Failed to add rental");
