@@ -15,6 +15,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
+
 import { getImageTypeFromBase64 } from "./helper";
 
 export const SpaceCard = (props) => {
@@ -50,18 +51,15 @@ export const SpaceCard = (props) => {
   const imageType = getImageTypeFromBase64(imageList[0] || "");
 
   const handleViewDetails = () => {
-    navigate(
-      `/space-details/:${space?.spaceID}?editMode=${
-        editMode !== undefined && editMode === true ? editMode : false
-      }`
-    );
-  };
-
+    navigate(`/space-details/${space?.spaceID}`, {
+        state: { editMode: editMode !== undefined && editMode === true }
+    });
+};
   const handleDeleteSpace = async () => {
     if (onDelete) {
-      onDelete(space.spaceID); // Call the onDelete function passed from parent with spaceId
+      onDelete(space.spaceID);
     }
-    setShowDeleteModal(false); // Hide the modal after deletion
+    setShowDeleteModal(false);
   };
 
   const toggleDeleteModal = () => {
@@ -71,9 +69,8 @@ export const SpaceCard = (props) => {
   return (
     <Card
       sx={{
-        maxWidth: 345,
+        width: "25vw",
         position: "relative",
-        flexBasis: "calc(51% - 15px)",
       }}
     >
       <CardMedia

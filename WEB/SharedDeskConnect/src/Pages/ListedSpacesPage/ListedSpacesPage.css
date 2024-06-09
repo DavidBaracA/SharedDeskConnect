@@ -19,6 +19,9 @@
 
 .listed-spaces-page {
   margin: 150px 200px 50px 200px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 }
 .sort-buttons {
   flex-flow: row;
@@ -33,5 +36,4 @@
 }
 
 
-/* .footer-container {
-  /* fix me */
+

@@ -190,17 +190,17 @@ export const ListedSpacesPage = () => {
           sx={{
             bgcolor: "background.default",
             display: "flex",
-            gap: "15px",
+            gap: "20px",
             flexDirection: "row",
             flexWrap: "wrap",
-            justifyContent: "flex-start",
+            alignSelf: "flex-start"
           }}
         >
           {paginatedSpaces.map((space) => (
             <SpaceCard key={space.spaceID} space={space} editMode={false} />
           ))}
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3}}>
           <Pagination
             count={totalPages}
             page={currentPage}

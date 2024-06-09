@@ -5,17 +5,14 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 
 export const UploadComponent = (props) => {
-  const {images } = props;
-  console.log("ds",images)
-  const [formatImages, setFormatImages] = useState(images)
+  const { images } = props;
+  console.log("ds", images);
+  const [formatImages, setFormatImages] = useState(images);
   const maxNumber = 69;
   const onChange = (imageList) => {
     // data for submit
     setFormatImages(imageList);
   };
-  // useEffect(()=>{
-
-  // })
 
   return (
     <div>
@@ -36,9 +33,12 @@ export const UploadComponent = (props) => {
         }) => (
           // write your building UI
           <div className="images-wrapers">
-            <Button variant="contained" onClick={onImageUpload} {...dragProps}  sx={{ ...(isDragging && { color: "red" }) }}
-
->
+            <Button
+              variant="contained"
+              onClick={onImageUpload}
+              {...dragProps}
+              sx={{ ...(isDragging && { color: "red" }) }}
+            >
               Click or Drop here
             </Button>
             &nbsp;
@@ -47,7 +47,7 @@ export const UploadComponent = (props) => {
                 <img src={image.data_url} alt="" width="100" />
                 <div className="image-item__btn-wrapper">
                   <Button
-                  size="small"
+                    size="small"
                     variant="contained"
                     onClick={() => onImageRemove(index)}
                   >

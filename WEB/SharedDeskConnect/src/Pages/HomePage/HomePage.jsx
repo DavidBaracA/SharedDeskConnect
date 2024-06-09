@@ -10,8 +10,6 @@ import Footer from '../../Components/Footer';
 import Highlights from '../../Components/Highlights';
 import { useNavigate } from "react-router-dom";
 
-// const defaultTheme = createTheme({});
-
 
 export default function HomePage() {
   const darkBlueBase = '#041f60';

@@ -7,7 +7,7 @@ import reducer from "./Redux/reducer";
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import storage from 'redux-persist/lib/storage'; 
 
 const persistConfig = {
   key: 'root',

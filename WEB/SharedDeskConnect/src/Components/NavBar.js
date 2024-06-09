@@ -29,11 +29,9 @@ function NavBar({ handleNavigateToHighlights }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
-  console.log("🚀 ~ NavBar ~ isLoggedIn:", isLoggedIn)
   const currentUser = useSelector((state) => state.currentUser);
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserType = useSelector((state) => state.currentUserType);
-  console.log("🚀 ~ NavBar ~ currentUserType:", currentUserType)
 
   const onRentASpaceClick = () => {
     navigate("/listed-spaces");

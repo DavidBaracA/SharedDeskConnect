@@ -8,12 +8,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormHelperText,
 } from "@mui/material";
-import { useSelector } from "react-redux";
 
 const RentalModal = ({ open, onClose, onSubmit, space }) => {
-  const currentUserId = useSelector((state) => state.currentUserID);
-  console.log("🚀 ~ RentalModal ~ currentUserId:", currentUserId)
 
   const [newRental, setNewRental] = useState({
     spaceID: space.spaceID,
@@ -113,43 +111,48 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
   const validateForm = () => {
     const errors = {};
     if (!newRental.contactNumber)
-      errors.contactNumber = "Contact Number is required";
+        errors.contactNumber = "Contact Number is required";
     if (!newRental.numberOfPersons || newRental.numberOfPersons <= 0)
-      errors.numberOfPersons = "Number of Persons must be greater than zero";
+        errors.numberOfPersons = "Number of Persons must be greater than zero";
     if (newRental.numberOfPersons > space.availableCapacity)
-      errors.numberOfPersons = "Number of Persons exceeds available capacity";
+        errors.numberOfPersons = "Number of Persons exceeds available capacity";
     if (newRental.rentalStartPeriod > newRental.rentalEndPeriod)
-      errors.rentalPeriod = "End Date must be after Start Date";
+        errors.rentalPeriod = "End Date must be after Start Date";
 
-    // Additional validation to ensure the selected period does not exceed available capacity
+    // Validate against existing rentals and space availability
     const start = new Date(newRental.rentalStartPeriod);
     const end = new Date(newRental.rentalEndPeriod);
     const dateCapacityMap = new Map();
 
     existingRentals.forEach((rental) => {
-      const rentalStart = new Date(rental.rentalStartPeriod);
-      const rentalEnd = new Date(rental.rentalEndPeriod);
+        const rentalStart = new Date(rental.rentalStartPeriod);
+        const rentalEnd = new Date(rental.rentalEndPeriod);
 
-      for (let d = new Date(rentalStart); d <= rentalEnd; d.setDate(d.getDate() + 1)) {
-        const rentalDate = new Date(d);
-        const currentTotal = dateCapacityMap.get(rentalDate.toDateString()) || 0;
-        dateCapacityMap.set(rentalDate.toDateString(), currentTotal + rental.numberOfPersons);
-      }
+        for (let d = new Date(rentalStart); d <= rentalEnd; d.setDate(d.getDate() + 1)) {
+            const formattedDate = d.toDateString();
+            const currentTotal = dateCapacityMap.get(formattedDate) || 0;
+            dateCapacityMap.set(formattedDate, currentTotal + rental.numberOfPersons);
+        }
     });
 
+    let unavailableDays = [];
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const rentalDate = new Date(d);
-      const totalPersonsOnDate = dateCapacityMap.get(rentalDate.toDateString()) || 0;
+        const formattedDate = d.toDateString();
+        const totalPersonsOnDate = dateCapacityMap.get(formattedDate) || 0;
 
-      if (totalPersonsOnDate + newRental.numberOfPersons > space.availableCapacity) {
-        errors.rentalPeriod = "Selected period exceeds available capacity on certain dates";
-        break;
-      }
+        if (totalPersonsOnDate + newRental.numberOfPersons > space.availableCapacity) {
+            unavailableDays.push(formattedDate);
+        }
+    }
+
+    if (unavailableDays.length > 0) {
+        errors.rentalPeriod = `Selected period has unavailable days due to capacity limits on: ${unavailableDays.join(", ")}`;
     }
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  };
+};
+
 
   const handleSubmit = () => {
     if (!validateForm()) return;
@@ -254,6 +257,7 @@ const RentalModal = ({ open, onClose, onSubmit, space }) => {
             error={!!formErrors.rentalPeriod}
             helperText={formErrors.rentalPeriod}
           />
+         {formErrors.rentalPeriod && <FormHelperText sx={{color: "red"}}>{formErrors.rentalPeriod }</FormHelperText>}
         </div>
       </DialogContent>
       <DialogActions>

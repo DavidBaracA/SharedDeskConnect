@@ -10,7 +10,7 @@ export const doesUserExist = (users, username) => {
 };
 
 export const isUserAuthenticated = (users, username, password) => {
-  // Check if any user in the list has the given username and password
+  // Check if the user exists in databse
   return users.some(
     (user) => user.username === username && user.password === password
   );
@@ -23,7 +23,7 @@ export const getImageTypeFromBase64 = (base64Data) => {
       } else if (base64Data.startsWith('iVBORw0KGgoAAA')) { // Sample prefix for PNG images
         return 'image/png';
       } else {
-        return null; // Unknown image type
+        return null; 
       }
   }
   return;

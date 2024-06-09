@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import {
@@ -44,13 +44,10 @@ export const SpaceDetailsPage = () => {
 
   const purple = "#5b5299";
   const lightPurple = "#a6b6f8";
-  const { id } = useParams();
-  const cleanedId = id.substring(1);
+  const { id : cleanedId } = useParams();
   const [imageList, setImageList] = useState([]);
   const [spaceDetails, setSpaceDetails] = useState(null);
-  console.log("🚀 ~ SpaceDetailsPage ~ spaceDetails:", spaceDetails);
   const [contactExpanded, setContactExpanded] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [notifyOnChange, setNotifyOnChange] = useState(false);
@@ -58,26 +55,20 @@ export const SpaceDetailsPage = () => {
   const [rentalDialogOpen, setRentalDialogOpen] = useState(false);
   const [priceConfirmationDialogOpen, setPriceConfirmationDialogOpen] =
     useState(false);
-  const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false); // New state for rental list modal
+  const [rentalListDialogOpen, setRentalListDialogOpen] = useState(false); 
   const [newRental, setNewRental] = useState(null);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [ownerUsername, setOwnerUsername] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
-  const searchParams = useMemo(
-    () => new URLSearchParams(location.search),
-    [location]
-  );
+  const { editMode } = location.state || { editMode: false }; // Default to false if not provided
 
   const currentUserId = useSelector((state) => state.currentUserID);
   const currentUserEmail = useSelector((state) => state.currentUserEmail);
   const currentUserType = useSelector((state) => state.currentUserType);
 
-  useEffect(() => {
-    const isEdit = searchParams.get("editMode");
-    setEditMode(isEdit === "true");
-  }, [searchParams]);
+
 
   useEffect(() => {
     const fetchSpaceDetails = async () => {
