@@ -6,7 +6,6 @@ import { useState } from "react";
 
 export const UploadComponent = (props) => {
   const { images } = props;
-  console.log("ds", images);
   const [formatImages, setFormatImages] = useState(images);
   const maxNumber = 69;
   const onChange = (imageList) => {

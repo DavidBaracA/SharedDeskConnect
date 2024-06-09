@@ -338,7 +338,6 @@ export const SpaceDetailsPage = () => {
   };
 
   const handleNewRentalSubmit = (rental, price) => {
-    console.log("🚀 ~ handleNewRentalSubmit ~ rental:", rental);
     setNewRental({ ...rental, userPayerID: currentUserId });
     setCalculatedPrice(price);
     setRentalDialogOpen(false);
