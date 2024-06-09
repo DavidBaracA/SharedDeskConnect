@@ -9,7 +9,6 @@ export const UploadComponent = (props) => {
   const [formatImages, setFormatImages] = useState(images);
   const maxNumber = 69;
   const onChange = (imageList) => {
-    // data for submit
     setFormatImages(imageList);
   };
 
@@ -30,7 +29,6 @@ export const UploadComponent = (props) => {
           dragProps,
           isDragging,
         }) => (
-          // write your building UI
           <div className="images-wrapers">
             <Button
               variant="contained"
