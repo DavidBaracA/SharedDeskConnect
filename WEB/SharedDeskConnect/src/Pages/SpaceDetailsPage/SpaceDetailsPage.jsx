@@ -597,7 +597,7 @@ export const SpaceDetailsPage = () => {
                   Available Desks: {spaceDetails.availableCapacity}
                 </p>
                 {spaceDetails.availableCapacity !== undefined &&
-                  spaceDetails.availableCapacity === 0 && (
+                  spaceDetails.availableCapacity === 0 && currentUserId && (
                     <div className="switch-container">
                       <Tooltip title="Send me a notification mail when this is available">
                         <InfoIcon />

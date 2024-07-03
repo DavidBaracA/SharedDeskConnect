@@ -12,7 +12,7 @@ namespace SharedDeskConnect.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly IEmailService _emailService; // Assuming you have an email service
+        private readonly IEmailService _emailService; 
 
         public NotificationController(DataContext context, IEmailService emailService)
         {
