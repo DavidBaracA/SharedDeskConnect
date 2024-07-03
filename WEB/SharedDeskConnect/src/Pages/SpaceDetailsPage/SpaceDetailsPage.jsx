@@ -347,7 +347,7 @@ export const SpaceDetailsPage = () => {
     const localTime = new Date(date);
     const timeOffsetInMS = localTime.getTimezoneOffset() * 60000;
     return new Date(localTime.getTime() - timeOffsetInMS);
-};
+  };
   const handleConfirmRental = async () => {
     try {
       const response = await fetch(`http://localhost:5100/api/Rental`, {
@@ -357,8 +357,12 @@ export const SpaceDetailsPage = () => {
         },
         body: JSON.stringify({
           ...newRental,
-          rentalStartPeriod: adjustDateForTimezone(newRental.rentalStartPeriod).toISOString(),
-          rentalEndPeriod: adjustDateForTimezone(newRental.rentalEndPeriod).toISOString(),
+          rentalStartPeriod: adjustDateForTimezone(
+            newRental.rentalStartPeriod
+          ).toISOString(),
+          rentalEndPeriod: adjustDateForTimezone(
+            newRental.rentalEndPeriod
+          ).toISOString(),
           CustomPrice: calculatedPrice,
         }),
       });
@@ -480,13 +484,15 @@ export const SpaceDetailsPage = () => {
         </div>
         <div className="container">
           <div className="left-side-styling">
-         { imageList.length > 0 && <ImageGallery
-              showPlayButton={false}
-              showBullets
-              showIndex
-              showNav
-              items={imageList}
-            />}
+            {imageList.length > 0 && (
+              <ImageGallery
+                showPlayButton={false}
+                showBullets
+                showIndex
+                showNav
+                items={imageList}
+              />
+            )}
             <div className="description-box">
               <p>Description: {spaceDetails.description}</p>
               <BenefitsList items={spaceDetails.benefits.split(",")} />
@@ -649,19 +655,28 @@ export const SpaceDetailsPage = () => {
               </Button>
             )}
             {!editMode && currentUserType !== "renter" && (
-              <Button
-                onClick={handleOpenRentalDialog}
-                color="secondary"
-                variant="contained"
-                style={{ marginTop: "10px" }}
-                disabled={
-                  !currentUserId ||
-                  currentUserId === spaceDetails.renterUserId ||
-                  spaceDetails.availableCapacity === 0
-                }
-              >
-                Apply for a Rental
-              </Button>
+              <>
+              <div className="switch-container">
+                {!currentUserId && (
+                  <Tooltip title="You need to be logged in to apply for a rental">
+                    <InfoIcon sx={{marginRight: "5px" , paddingTop: "3px"}} />
+                  </Tooltip>
+                )}
+                <Button
+                  onClick={handleOpenRentalDialog}
+                  color="secondary"
+                  variant="contained"
+                  style={{ marginTop: "10px" }}
+                  disabled={
+                    !currentUserId ||
+                    currentUserId === spaceDetails.renterUserId ||
+                    spaceDetails.availableCapacity === 0
+                  }
+                >
+                  Apply for a Rental
+                </Button>
+                </div>
+              </>
             )}
             {editMode && (
               <div>

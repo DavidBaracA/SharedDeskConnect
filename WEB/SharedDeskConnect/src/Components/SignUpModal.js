@@ -82,7 +82,7 @@ export const SignUpModal = (props) => {
     }
 
     if (!isStrongPassword(formValues.password)) {
-      newErrors.password = "Password is not strong enough";
+      newErrors.password = "Password is not strong enough. You need one uppercase, one digit, and minimum 8 characters.";
       valid = false;
     }
 
