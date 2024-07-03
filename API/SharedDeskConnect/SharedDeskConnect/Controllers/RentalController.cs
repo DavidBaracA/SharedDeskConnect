@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedDeskConnect.Models;
 using SharedDeskConnect.Services;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SharedDeskConnect.Controllers
 {

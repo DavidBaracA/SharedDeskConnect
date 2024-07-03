@@ -82,7 +82,7 @@ namespace SharedDeskConnect.Controllers
                 var spaceName = space.Name;
                 var spaceContactNumber = space.ContactNumber;
 
-                var spaceUrl = $"http://localhost:3000/space-details/:{request.SpaceId}"; 
+                var spaceUrl = $"http://localhost:3000/space-details/{request.SpaceId}"; 
 
                 foreach (var userEmail in usersToNotify)
                 {

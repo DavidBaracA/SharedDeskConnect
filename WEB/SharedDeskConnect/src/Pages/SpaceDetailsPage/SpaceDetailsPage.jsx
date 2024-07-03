@@ -480,13 +480,13 @@ export const SpaceDetailsPage = () => {
         </div>
         <div className="container">
           <div className="left-side-styling">
-            <ImageGallery
+         { imageList.length > 0 && <ImageGallery
               showPlayButton={false}
               showBullets
               showIndex
               showNav
               items={imageList}
-            />
+            />}
             <div className="description-box">
               <p>Description: {spaceDetails.description}</p>
               <BenefitsList items={spaceDetails.benefits.split(",")} />
